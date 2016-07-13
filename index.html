@@ -4,15 +4,22 @@
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
 <script>window.jQuery || document.write('<script src="js/vendor/jquery-1.8.3.min.js"><\/script>')</script>
 <script>
+
   var level = 0;
   var foodCount = 0;
-  var timeElapsed = 0;
+  var hungerTimeElapsed = 0;
+  var loveTimeElapsed = 0;
   var width = 800;
   var height = 600;
-  var chickenWeight = 100;
+  var chickenWeight = 50;
+  var hungerSeconds = 0;
+  var loveSeconds = 0;
   var stage = new PIXI.Container();
+
+  // Initialize textures
   var foodTexture = PIXI.Texture.fromImage('assets/img/bunny.png');
-  var characterTexture = PIXI.Texture.fromImage('assets/img/test_chrischiken/chris.png');
+  var characterTexture = PIXI.Texture.fromImage('assets/img/chicken/chicken_eyes_open.png');
+
   var renderer = PIXI.autoDetectRenderer(width, height,{backgroundColor : 0x1099bb});
   var backgroundTile = new PIXI.extras.TilingSprite(foodTexture, renderer.width, renderer.height);
   backgroundTile.tileScale.x = 0.05;
@@ -37,6 +44,7 @@
   // display the heart logo at 100%
   var heartTexture = PIXI.Texture.fromImage('assets/img/heart/heart100.png');
   var heart = new PIXI.Sprite(heartTexture);
+
   // hard coded values
   heart.height = 50;
   heart.width = 50;
@@ -49,6 +57,7 @@
   // display the hunger logo at 100%
   var hungerTexture = PIXI.Texture.fromImage('assets/img/hunger/hunger100.png');
   var hunger = new PIXI.Sprite(hungerTexture);
+
   // hard coded values
   hunger.height = 50;
   hunger.width = 50;
@@ -70,19 +79,26 @@
     stage.addChild(food);
   });
 
-  // $(renderer.view).mouseup(function(e) {
-  //   console.log(e);
-  // });
-
   // start animating
   animate();
   function animate() {
-    var seconds = ++timeElapsed/60;
+    hungerSeconds = ++hungerTimeElapsed/60;
+    loveSeconds = ++loveTimeElapsed/60;
     requestAnimationFrame(animate);
     checkFoodPositions();
+    checkTimeElapsed(hungerSeconds, loveSeconds);
     text.text = score;
     // render the container
     renderer.render(stage);
+  }
+
+  function checkTimeElapsed(hungerSeconds, loveSeconds) {
+    // if no action has been taken on hunger, make chicken skinnier
+    if (hungerSeconds>2.5) {
+      updateChickenWeight(-5);
+    }
+
+    // if no action has been taken on love, update the chicken love
   }
 
   function checkFoodPositions() {
@@ -94,7 +110,7 @@
       else if (checkCollision(chicken, foods[i])) {
         removeFood(foods[i]);
         if (++foodCount == 2) {
-          makeChickenFat(++level);
+          updateChickenWeight(5);
           foodCount = 0;
           seconds = 0;
         }
@@ -103,34 +119,46 @@
     }
   }
 
-  function makeChickenFat(level) {
-    switch(level) {
-      case -4:
-        chicken.texture = PIXI.Texture.fromImage('assets/img/test_chrischiken/chrisskinny400.png');
-        break;
-      case -3:
-        chicken.texture = PIXI.Texture.fromImage('assets/img/test_chrischiken/chrisskinny300.png');
-        break;
-      case -2:
-        chicken.texture = PIXI.Texture.fromImage('assets/img/test_chrischiken/chrisskinny200.png');
-        break;
-      case -1:
-        chicken.texture = PIXI.Texture.fromImage('assets/img/test_chrischiken/chrisskinny100.png');
-        break;
+  // resizes chicken based on hunger and love
+  function resizeChicken(weight) {
+    switch(weight) {
       case 0:
-        chicken.texture = PIXI.Texture.fromImage('assets/img/test_chrischiken/chris.png');
+        // dead
+        console.log(weight);
         break;
-      case 1:
-        chicken.texture = PIXI.Texture.fromImage('assets/img/test_chrischiken/chrisfat100.png');
+      case 10:
+        console.log(weight);
         break;
-      case 2:
-        chicken.texture = PIXI.Texture.fromImage('assets/img/test_chrischiken/chrisfat200.png');
+      case 20:
+        console.log(weight);
         break;
-      case 3:
-        chicken.texture = PIXI.Texture.fromImage('assets/img/test_chrischiken/chrisfat300.png');
+      case 30:
+        console.log(weight);
         break;
-      case 4:
-        chicken.texture = PIXI.Texture.fromImage('assets/img/test_chrischiken/chrisfat400.png');
+      case 40:
+        console.log(weight);
+        break;
+      case 50:
+        console.log(weight);
+        break;
+      case 60:
+        console.log(weight);
+        break;
+      case 70:
+        console.log(weight);
+        break;
+      case 80:
+        console.log(weight);
+        break;
+      case 90:
+        console.log(weight);
+        break;
+      case 100:
+        // explosion
+        console.log(weight);
+        break;
+      default:
+        console.log(weight);
         break;
     }
   }
@@ -149,12 +177,14 @@
   }
 
   // updates chicken weight with the given value! aka feed chicken
-  function feedChicken(foodValue){
+  function updateChickenWeight(foodValue){
     chickenWeight += foodValue;
     if(chickenWeight > 100){
       chickenWeight = 100;
     }
+    resizeChicken(chickenWeight);
     setHungerLevel(chickenWeight);
+    hungerTimeElapsed = 0;
   }
 
   // replaces the hunger icon with the appropriate icon
