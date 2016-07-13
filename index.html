@@ -4,11 +4,14 @@
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
 <script>window.jQuery || document.write('<script src="js/vendor/jquery-1.8.3.min.js"><\/script>')</script>
 <script>
+  var level = 0;
+  var foodCount = 0;
+  var timeElapsed = 0;
   var width = 800;
   var height = 600;
   var stage = new PIXI.Container();
   var foodTexture = PIXI.Texture.fromImage('assets/img/bunny.png');
-  var characterTexture = PIXI.Texture.fromImage('assets/img/soup.jpg');
+  var characterTexture = PIXI.Texture.fromImage('assets/img/test_chrischiken/chris.png');
   var renderer = PIXI.autoDetectRenderer(width, height,{backgroundColor : 0x1099bb});
   var backgroundTile = new PIXI.extras.TilingSprite(foodTexture, renderer.width, renderer.height);
   backgroundTile.tileScale.x = 0.05;
@@ -23,11 +26,12 @@
   chicken.anchor.y = 0.0;
   chicken.position.x = 300;
   chicken.position.y = 400;
-  chicken.scale.x = 0.6;
-  chicken.scale.y = 0.6;
+  chicken.scale.x = 0.2;
+  chicken.scale.y = 0.2;
   stage.addChild(chicken);
   var score = 0;
   var text = new PIXI.Text(score, {font : '24px Arial', fill : 0x000000, align : 'center'});
+
   stage.addChild(text);
 
   $(renderer.view).mousedown(function(e) {
@@ -49,6 +53,7 @@
   // start animating
   animate();
   function animate() {
+    var seconds = ++timeElapsed/60;
     requestAnimationFrame(animate);
     checkFoodPositions();
     text.text = score;
@@ -64,8 +69,45 @@
       }
       else if (checkCollision(chicken, foods[i])) {
         removeFood(foods[i]);
+        if (++foodCount == 2) {
+          makeChickenFat(++level);
+          foodCount = 0;
+          seconds = 0;
+        }
         score++;
       }
+    }
+  }
+
+  function makeChickenFat(level) {
+    switch(level) {
+      case -4:
+        chicken.texture = PIXI.Texture.fromImage('assets/img/test_chrischiken/chrisskinny400.png');
+        break;
+      case -3:
+        chicken.texture = PIXI.Texture.fromImage('assets/img/test_chrischiken/chrisskinny300.png');
+        break;
+      case -2:
+        chicken.texture = PIXI.Texture.fromImage('assets/img/test_chrischiken/chrisskinny200.png');
+        break;
+      case -1:
+        chicken.texture = PIXI.Texture.fromImage('assets/img/test_chrischiken/chrisskinny100.png');
+        break;
+      case 0:
+        chicken.texture = PIXI.Texture.fromImage('assets/img/test_chrischiken/chris.png');
+        break;
+      case 1:
+        chicken.texture = PIXI.Texture.fromImage('assets/img/test_chrischiken/chrisfat100.png');
+        break;
+      case 2:
+        chicken.texture = PIXI.Texture.fromImage('assets/img/test_chrischiken/chrisfat200.png');
+        break;
+      case 3:
+        chicken.texture = PIXI.Texture.fromImage('assets/img/test_chrischiken/chrisfat300.png');
+        break;
+      case 4:
+        chicken.texture = PIXI.Texture.fromImage('assets/img/test_chrischiken/chrisfat400.png');
+        break;
     }
   }
 
