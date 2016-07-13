@@ -6,21 +6,25 @@
 <script>
   var width = 800;
   var height = 600;
+  var stage = new PIXI.Container();
+  var foodTexture = PIXI.Texture.fromImage('assets/img/bunny.png');
+  var characterTexture = PIXI.Texture.fromImage('assets/img/soup.jpg');
   var renderer = PIXI.autoDetectRenderer(width, height,{backgroundColor : 0x1099bb});
+  var backgroundTile = new PIXI.extras.TilingSprite(foodTexture, renderer.width, renderer.height);
+  backgroundTile.tileScale.x = 0.05;
+  backgroundTile.tileScale.y = 0.05;
+  stage.addChild(backgroundTile);
   document.body.appendChild(renderer.view);
 
-  // create the root of the scene graph
-  var stage = new PIXI.Container();
-
   // create a texture from an image path
-  var texture = PIXI.Texture.fromImage('assets/img/bunny.png');
-  var foodTexture = PIXI.Texture.fromImage('assets/img/soup.jpg');
   var foods = [];
-  var chicken = new PIXI.Sprite(texture);
+  var chicken = new PIXI.Sprite(characterTexture);
   chicken.anchor.x = 0.0;
   chicken.anchor.y = 0.0;
   chicken.position.x = 300;
   chicken.position.y = 400;
+  chicken.scale.x = 0.6;
+  chicken.scale.y = 0.6;
   stage.addChild(chicken);
   var score = 0;
   var text = new PIXI.Text(score, {font : '24px Arial', fill : 0x000000, align : 'center'});
@@ -58,7 +62,7 @@
       if (foods[i].position.y > 600) {
         removeFood(foods[i]);
       }
-      if (checkCollision(chicken, foods[i])) {
+      else if (checkCollision(chicken, foods[i])) {
         removeFood(foods[i]);
         score++;
       }
