@@ -9,6 +9,7 @@
   var timeElapsed = 0;
   var width = 800;
   var height = 600;
+  var chickenWeight = 100;
   var stage = new PIXI.Container();
   var foodTexture = PIXI.Texture.fromImage('assets/img/bunny.png');
   var characterTexture = PIXI.Texture.fromImage('assets/img/test_chrischiken/chris.png');
@@ -31,8 +32,31 @@
   stage.addChild(chicken);
   var score = 0;
   var text = new PIXI.Text(score, {font : '24px Arial', fill : 0x000000, align : 'center'});
-
   stage.addChild(text);
+
+  // display the heart logo at 100%
+  var heartTexture = PIXI.Texture.fromImage('assets/img/heart/heart100.png');
+  var heart = new PIXI.Sprite(heartTexture);
+  // hard coded values
+  heart.height = 50;
+  heart.width = 50;
+  heart.anchor.x = 0.5;
+  heart.anchor.y = 0.5;
+  heart.position.x = 700;
+  heart.position.y = 400;
+  stage.addChild(heart);
+
+  // display the hunger logo at 100%
+  var hungerTexture = PIXI.Texture.fromImage('assets/img/hunger/hunger100.png');
+  var hunger = new PIXI.Sprite(hungerTexture);
+  // hard coded values
+  hunger.height = 50;
+  hunger.width = 50;
+  hunger.anchor.x = 0.5;
+  hunger.anchor.y = 0.5;
+  hunger.position.x = 700;
+  hunger.position.y = 480;
+  stage.addChild(hunger);
 
   $(renderer.view).mousedown(function(e) {
     var x = e.offsetX;
@@ -122,6 +146,45 @@
             (b.position.x + b.width) < a.position.x ||
              b.position.y > (a.position.y + a.height) ||
             (b.position.y + b.height) < a.position.y);
+  }
+
+  // updates chicken weight with the given value! aka feed chicken
+  function feedChicken(foodValue){
+    chickenWeight += foodValue;
+    if(chickenWeight > 100){
+      chickenWeight = 100;
+    }
+    setHungerLevel(chickenWeight);
+  }
+
+  // replaces the hunger icon with the appropriate icon
+  function setHungerLevel(hungerLevel) {
+    if(hungerLevel == 0){
+      hunger.texture = PIXI.Texture.fromImage('assets/img/hunger/hunger0.png');
+    } else if(hungerLevel > 0 && hungerLevel < 25){
+      hunger.texture = PIXI.Texture.fromImage('assets/img/hunger/hunger25.png');
+    } else if(hungerLevel >= 25 && hungerLevel < 50) {
+      hunger.texture = PIXI.Texture.fromImage('assets/img/hunger/hunger50.png');
+    } else if(hungerLevel >= 50 && hungerLevel < 75){
+      hunger.texture = PIXI.Texture.fromImage('assets/img/hunger/hunger75.png');
+    } else if(hungerLevel >= 75 && hungerLevel <= 100){
+      hunger.texture = PIXI.Texture.fromImage('assets/img/hunger/hunger100.png');
+    }
+  }
+
+  // replaces the love icon with the appropriate icon
+  function setLoveLevel(loveLevel) {
+    if(loveLevel == 0){
+      heart.texture = PIXI.Texture.fromImage('assets/img/heart/heart0.png');
+    } else if(loveLevel > 0 && loveLevel < 25){
+      heart.texture = PIXI.Texture.fromImage('assets/img/heart/heart25.png');
+    } else if(loveLevel >= 25 && loveLevel < 50) {
+      heart.texture = PIXI.Texture.fromImage('assets/img/heart/heart50.png');
+    } else if(loveLevel >= 50 && loveLevel < 75){
+      heart.texture = PIXI.Texture.fromImage('assets/img/heart/heart75.png');
+    } else if(loveLevel >= 75 && loveLevel <= 100){
+      heart.texture = PIXI.Texture.fromImage('assets/img/heart/heart100.png');
+    }
   }
 </script>
 </body>
