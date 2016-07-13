@@ -9,8 +9,8 @@
   var foodCount = 0;
   var hungerTimeElapsed = 0;
   var loveTimeElapsed = 0;
-  var width = 800;
-  var height = 600;
+  var width = 640;
+  var height = 480;
   var chickenWeight = 50;
   var hungerSeconds = 0;
   var loveSeconds = 0;
@@ -32,10 +32,10 @@
   var chicken = new PIXI.Sprite(characterTexture);
   chicken.anchor.x = 0.0;
   chicken.anchor.y = 0.0;
-  chicken.position.x = 300;
-  chicken.position.y = 400;
-  chicken.scale.x = 0.2;
-  chicken.scale.y = 0.2;
+  chicken.position.x = 0.25 * width;
+  chicken.position.y = 0.35 * height;
+  chicken.scale.x = 0.7;
+  chicken.scale.y = 0.7;
   stage.addChild(chicken);
   var score = 0;
   var text = new PIXI.Text(score, {font : '24px Arial', fill : 0x000000, align : 'center'});
@@ -50,8 +50,8 @@
   heart.width = 50;
   heart.anchor.x = 0.5;
   heart.anchor.y = 0.5;
-  heart.position.x = 700;
-  heart.position.y = 400;
+  heart.position.x = 0.875 * width;
+  heart.position.y = 0.65 * height;
   stage.addChild(heart);
 
   // display the hunger logo at 100%
@@ -63,8 +63,8 @@
   hunger.width = 50;
   hunger.anchor.x = 0.5;
   hunger.anchor.y = 0.5;
-  hunger.position.x = 700;
-  hunger.position.y = 480;
+  hunger.position.x = 0.875 * width;
+  hunger.position.y = 0.8 * height;
   stage.addChild(hunger);
 
   $(renderer.view).mousedown(function(e) {
