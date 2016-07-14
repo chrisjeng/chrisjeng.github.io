@@ -3,9 +3,14 @@
   <link rel="stylesheet" type="text/css" href="assets/style.css" />
 </head>
 <body>
+<!-- The Quicksilver facebook js library -->
+<script src="assets/js/fbinstant.js"></script>
+
+<!-- Used as our main engine -->
 <script src="assets/js/pixi.js"></script>
 <script src="assets/js/sound.js"></script>
-<script src="assets/js/fbinstant.js"></script>
+
+<!-- Use local lib of this because we can't call http requests in fb -->
 <script src="assets/js/jquery.min.js"></script>
 <script>
 
@@ -33,10 +38,9 @@
 
     // on drag, check to see if mouse is still colliding w/ chicken
     var onDragMove = function() {
-      if (this.dragging)
-      {
+      if (this.dragging) {
         var mousePosition = this.data.getLocalPosition(this.parent);
-        if(checkMouseCollision(mousePosition, chicken.bodySprite)) {
+        if (checkMouseCollision(mousePosition, chicken.bodySprite)) {
           console.log("petpetpet");
           chicken.increaseChickenLove();
         }
@@ -102,9 +106,9 @@
     }
 
     // updates chicken weight with the given value! aka feed chicken
-    this.updateChickenWeight = function(foodValue){
+    this.updateChickenWeight = function(foodValue) {
       this.chickenWeight += foodValue;
-      if(this.chickenWeight > 100){
+      if (this.chickenWeight > 100){
         this.chickenWeight = 100;
       }
       this.resizeChicken(this.chickenWeight);
@@ -113,16 +117,16 @@
 
     // function called when user pets chicken
     this.increaseChickenLove = function() {
-      if(this.chickenLove > 0 && this.chickenLove <= 30){
+      if (this.chickenLove > 0 && this.chickenLove <= 30){
         this.chickenLove += .75;
       }
-      else if(this.chickenLove > 30 && this.chickenLove <= 50){
+      else if (this.chickenLove > 30 && this.chickenLove <= 50){
         this.chickenLove += .5;
       }
-      else if(this.chickenLove > 50){
+      else if (this.chickenLove > 50){
         this.chickenLove += .25;
       }
-      if(this.chickenLove > 100){
+      if (this.chickenLove > 100){
         this.chickenLove = 100;
       }
     }
@@ -318,7 +322,7 @@
       chicken.updateChickenWeight(-5);
       setHungerLevel(chicken.chickenWeight);
     }
-    if(loveSeconds > 2.5){
+    if (loveSeconds > 2.5){
       chicken.decreaseChickenLove();
       setLoveIcon(chicken.chickenLove);
     }
@@ -386,30 +390,30 @@
 
   // replaces the hunger icon with the appropriate icon
   function setHungerLevel(hungerLevel) {
-    if(hungerLevel == 0){
+    if (hungerLevel == 0){
       hunger.texture = hunger0;
-    } else if(hungerLevel > 0 && hungerLevel < 25){
+    } else if (hungerLevel > 0 && hungerLevel < 25){
       hunger.texture = hunger25;
-    } else if(hungerLevel >= 25 && hungerLevel < 50) {
+    } else if (hungerLevel >= 25 && hungerLevel < 50) {
       hunger.texture = hunger50;
-    } else if(hungerLevel >= 50 && hungerLevel < 75){
+    } else if (hungerLevel >= 50 && hungerLevel < 75){
       hunger.texture = hunger75;
-    } else if(hungerLevel >= 75 && hungerLevel <= 100){
+    } else if (hungerLevel >= 75 && hungerLevel <= 100){
       hunger.texture = hunger100;
     }
   }
 
   // replaces the love icon with the appropriate icon
   function setLoveIcon(loveLevel) {
-    if(loveLevel == 0){
+    if (loveLevel == 0){
       heart.texture = heart0;
-    } else if(loveLevel > 0 && loveLevel < 25){
+    } else if (loveLevel > 0 && loveLevel < 25){
       heart.texture = heart25;
-    } else if(loveLevel >= 25 && loveLevel < 50) {
+    } else if (loveLevel >= 25 && loveLevel < 50) {
       heart.texture = heart50;
-    } else if(loveLevel >= 50 && loveLevel < 75){
+    } else if (loveLevel >= 50 && loveLevel < 75){
       heart.texture = heart75;
-    } else if(loveLevel >= 75 && loveLevel <= 100){
+    } else if (loveLevel >= 75 && loveLevel <= 100){
       heart.texture = heart100;
     }
   }
@@ -418,7 +422,7 @@
 
   // function used to check if sprite collides with mouse
   // pass mouse in as first parameter
-  function checkMouseCollision(a, b){
+  function checkMouseCollision(a, b) {
     return !(b.position.x > a.x ||
             (b.position.x + b.width) < a.x ||
              b.position.y > a.y ||
@@ -460,6 +464,8 @@
     onigiri.scale.y = .1;
     return onigiri;
   }
+
+  FBInstant.loading.complete();
 </script>
 </body>
 </html
