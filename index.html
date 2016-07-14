@@ -22,7 +22,8 @@
   // Initialize textures
   var characterTexture = PIXI.Texture.fromImage('assets/img/chicken/chicken2_black.png');
   var foodTexture = PIXI.Texture.fromImage('assets/img/food/fries.png');
-  var barnTexture = PIXI.Texture.fromImage('assets/img/barn.png');
+  var barnTexture = PIXI.Texture.fromImage('assets/img/background/barn.png');
+  var cloudTexture = PIXI.Texture.fromImage('assets/img/background/cloud3.png');
 
   // init heart/hunger textures
   var heart0 = PIXI.Texture.fromImage('assets/img/heart/heart0.png');
@@ -65,6 +66,10 @@
   barn.position.x = 0.05 * width;
   barn.position.y = 0.455 * height;
   stage.addChild(barn);
+
+  var cloud = new PIXI.Sprite(cloudTexture);
+  cloud.scale.set(0.25, 0.25);
+  stage.addChild(cloud);
 
 
   // Load the sounds
