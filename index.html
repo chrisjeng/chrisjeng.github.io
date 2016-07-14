@@ -12,6 +12,7 @@
   var width = 640;
   var height = 480;
   var chickenWeight = 50;
+  var chickenLove = 50;
   var hungerSeconds = 0;
   var loveSeconds = 0;
   var stage = new PIXI.Container();
@@ -19,6 +20,19 @@
   // Initialize textures
   var foodTexture = PIXI.Texture.fromImage('assets/img/bunny.png');
   var characterTexture = PIXI.Texture.fromImage('assets/img/chicken/chicken_eyes_open.png');
+
+  // init heart/hunger textures
+  var heart0 = PIXI.Texture.fromImage('assets/img/heart/heart0.png');
+  var heart25 = PIXI.Texture.fromImage('assets/img/heart/heart25.png');
+  var heart50 = PIXI.Texture.fromImage('assets/img/heart/heart50.png');
+  var heart75 = PIXI.Texture.fromImage('assets/img/heart/heart75.png');
+  var heart100 = PIXI.Texture.fromImage('assets/img/heart/heart100.png');
+  var hunger0 = PIXI.Texture.fromImage('assets/img/hunger/hunger0.png');
+  var hunger25 = PIXI.Texture.fromImage('assets/img/hunger/hunger25.png');
+  var hunger50 = PIXI.Texture.fromImage('assets/img/hunger/hunger50.png');
+  var hunger75 = PIXI.Texture.fromImage('assets/img/hunger/hunger75.png');
+  var hunger100 = PIXI.Texture.fromImage('assets/img/hunger/hunger100.png');
+
 
   var renderer = PIXI.autoDetectRenderer(width, height,{backgroundColor : 0x1099bb});
   var backgroundTile = new PIXI.extras.TilingSprite(foodTexture, renderer.width, renderer.height);
@@ -36,13 +50,26 @@
   chicken.position.y = 0.35 * height;
   chicken.scale.x = 0.7;
   chicken.scale.y = 0.7;
+  chicken.interactive = true;
+  chicken.buttonMode = true;
+  // set up dragging for chicken
+  chicken.on('mousedown', onDragStart)
+    .on('touchstart', onDragStart)
+    // events for drag end
+    .on('mouseup', onDragEnd)
+    .on('mouseupoutside', onDragEnd)
+    .on('touchend', onDragEnd)
+    .on('touchendoutside', onDragEnd)
+    // events for drag move
+    .on('mousemove', onDragMove)
+    .on('touchmove', onDragMove);
   stage.addChild(chicken);
   var score = 0;
   var text = new PIXI.Text(score, {font : '24px Arial', fill : 0x000000, align : 'center'});
   stage.addChild(text);
 
   // display the heart logo at 100%
-  var heartTexture = PIXI.Texture.fromImage('assets/img/heart/heart100.png');
+  var heartTexture = heart50;
   var heart = new PIXI.Sprite(heartTexture);
 
   // hard coded values
@@ -55,7 +82,7 @@
   stage.addChild(heart);
 
   // display the hunger logo at 100%
-  var hungerTexture = PIXI.Texture.fromImage('assets/img/hunger/hunger100.png');
+  var hungerTexture = hunger50;
   var hunger = new PIXI.Sprite(hungerTexture);
 
   // hard coded values
@@ -94,8 +121,11 @@
 
   function checkTimeElapsed(hungerSeconds, loveSeconds) {
     // if no action has been taken on hunger, make chicken skinnier
-    if (hungerSeconds>2.5) {
+    if (hungerSeconds > 2.5) {
       updateChickenWeight(-5);
+    }
+    if(loveSeconds > 2.5){
+      decreaseChickenLove();
     }
 
     // if no action has been taken on love, update the chicken love
@@ -190,31 +220,88 @@
   // replaces the hunger icon with the appropriate icon
   function setHungerLevel(hungerLevel) {
     if(hungerLevel == 0){
-      hunger.texture = PIXI.Texture.fromImage('assets/img/hunger/hunger0.png');
+      hunger.texture = hunger0;
     } else if(hungerLevel > 0 && hungerLevel < 25){
-      hunger.texture = PIXI.Texture.fromImage('assets/img/hunger/hunger25.png');
+      hunger.texture = hunger25;
     } else if(hungerLevel >= 25 && hungerLevel < 50) {
-      hunger.texture = PIXI.Texture.fromImage('assets/img/hunger/hunger50.png');
+      hunger.texture = hunger50;
     } else if(hungerLevel >= 50 && hungerLevel < 75){
-      hunger.texture = PIXI.Texture.fromImage('assets/img/hunger/hunger75.png');
+      hunger.texture = hunger75;
     } else if(hungerLevel >= 75 && hungerLevel <= 100){
-      hunger.texture = PIXI.Texture.fromImage('assets/img/hunger/hunger100.png');
+      hunger.texture = hunger100;
     }
   }
 
   // replaces the love icon with the appropriate icon
-  function setLoveLevel(loveLevel) {
+  function setLoveIcon(loveLevel) {
     if(loveLevel == 0){
-      heart.texture = PIXI.Texture.fromImage('assets/img/heart/heart0.png');
+      heart.texture = heart0;
     } else if(loveLevel > 0 && loveLevel < 25){
-      heart.texture = PIXI.Texture.fromImage('assets/img/heart/heart25.png');
+      heart.texture = heart25;
     } else if(loveLevel >= 25 && loveLevel < 50) {
-      heart.texture = PIXI.Texture.fromImage('assets/img/heart/heart50.png');
+      heart.texture = heart50;
     } else if(loveLevel >= 50 && loveLevel < 75){
-      heart.texture = PIXI.Texture.fromImage('assets/img/heart/heart75.png');
+      heart.texture = heart75;
     } else if(loveLevel >= 75 && loveLevel <= 100){
-      heart.texture = PIXI.Texture.fromImage('assets/img/heart/heart100.png');
+      heart.texture = heart100;
     }
+  }
+
+  // function called when user pets chicken
+  function increaseChickenLove() {
+    if(chickenLove > 0 && chickenLove <= 30){
+      chickenLove += .75;
+    }
+    else if(chickenLove > 30 && chickenLove <= 50){
+      chickenLove += .5;
+    }
+    else if(chickenLove > 50){
+      chickenLove += .25;
+    }
+    if(chickenLove > 100){
+      chickenLove = 100;
+    }
+  }
+
+  function decreaseChickenLove() {
+    loveTimeElapsed = 0;
+    chickenLove += -5;
+    setLoveIcon(chickenLove);
+  }
+
+  // petting event listener
+  function onDragStart(event) {
+    // store a reference to the data
+    this.data = event.data;
+    this.dragging = true;
+  }
+
+  function onDragEnd() {
+    this.dragging = false;
+    // set the interaction data to null
+    this.data = null;
+    console.log(chickenLove);
+  }
+
+  // on drag, check to see if mouse is still colliding w/ chicken
+  function onDragMove() {
+    if (this.dragging)
+    {
+      var mousePosition = this.data.getLocalPosition(this.parent);
+      if(checkMouseCollision(mousePosition, chicken)) {
+        console.log("petpetpet");
+        increaseChickenLove();
+      }
+    }
+  }
+
+  // function used to check if sprite collides with mouse
+  // pass mouse in as first parameter
+  function checkMouseCollision(a, b){
+    return !(b.position.x > a.x ||
+            (b.position.x + b.width) < a.x ||
+             b.position.y > a.y ||
+            (b.position.y + b.height) < a.y);
   }
 </script>
 </body>
