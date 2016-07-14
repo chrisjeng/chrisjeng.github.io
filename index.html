@@ -333,6 +333,7 @@ THE ABOVE CODE IS REQUIRED FOR DEPLOYING TO INSTANT GAMES! -->
   var ticks = 0;
   var hungerSeconds = 0;
   var loveSeconds = 0;
+  var time_between_foods = 45;
   var stage = new PIXI.Container();
 
   // Initialize textures
@@ -495,16 +496,20 @@ THE ABOVE CODE IS REQUIRED FOR DEPLOYING TO INSTANT GAMES! -->
 
   var food = getRandomFood();
 
+  var previous_drop = 0;
   $(renderer.view).mousedown(function(e) {
+    // don't let people spam foods or drop them on the chicken
     var x = e.offsetX;
     var y = e.offsetY;
-    // food.scale.x = 0.12;
-    // food.scale.y = 0.12;
+    if (!(y < height * 0.25 && ticks - previous_drop > time_between_foods)) {
+      return;
+    }
     food.position.x = x;
     food.position.y = y;
     foods.push(food); // Keep track of this food
     stage.addChild(food);
     food = getRandomFood();
+    previous_drop = ticks;
   });
 
   // start animating
