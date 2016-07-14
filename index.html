@@ -3,8 +3,30 @@
   <link rel="stylesheet" type="text/css" href="assets/style.css" />
 </head>
 <body>
+
 <!-- The Quicksilver facebook js library -->
-<script src="assets/js/fbinstant.js"></script>
+<script src="https://www.facebook.com/assets.php/en_US/fbinstant.js"></script>
+
+<!-- Setup the fb canvas SDK for JS -->
+<script>
+  window.fbAsyncInit = function() {
+    FB.init({
+      appId      : '653690181461812',
+      xfbml      : true,
+      version    : 'v2.7'
+    });
+
+    // ADD ADDITIONAL FACEBOOK CODE HERE
+  };
+
+  (function(d, s, id){
+     var js, fjs = d.getElementsByTagName(s)[0];
+     if (d.getElementById(id)) {return;}
+     js = d.createElement(s); js.id = id;
+     js.src = "//connect.facebook.net/en_US/sdk.js";
+     fjs.parentNode.insertBefore(js, fjs);
+   }(document, 'script', 'facebook-jssdk'));
+</script>
 
 <!-- Used as our main engine -->
 <script src="assets/js/pixi.js"></script>
@@ -249,7 +271,7 @@
 
   // create a texture from an image path
   var foods = []; // Keeps track of all food on screen
-  var chicken = new Chicken()
+  var chicken = new Chicken();
   stage.addChild(chicken.bodySprite);
   var score = 0;
   var text = new PIXI.Text(score, {font : '36px Arvo', fill : 0x000000, align : 'center'});
