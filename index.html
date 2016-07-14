@@ -63,6 +63,7 @@
       }
 
     // resizes chicken based on hunger and love
+    // TODO Angel
     this.resizeChicken = function(weight) {
       switch(weight) {
         case 0:
@@ -247,11 +248,14 @@
   }
 
   // create a texture from an image path
-  var foods = [];
+  var foods = []; // Keeps track of all food on screen
   var chicken = new Chicken()
   stage.addChild(chicken.bodySprite);
   var score = 0;
-  var text = new PIXI.Text(score, {font : '24px Arial', fill : 0x000000, align : 'center'});
+  var text = new PIXI.Text(score, {font : '36px Arvo', fill : 0x000000, align : 'center'});
+  var scoreBorderWidth = 10;
+  text.position.x = scoreBorderWidth;
+  text.position.y = scoreBorderWidth;
   stage.addChild(text);
 
   // display the heart logo at 100%
@@ -289,7 +293,7 @@
     // food.scale.y = 0.12;
     food.position.x = x;
     food.position.y = y;
-    foods.push(food);
+    foods.push(food); // Keep track of this food
     stage.addChild(food);
     food = getRandomFood();
   });
@@ -418,8 +422,6 @@
     }
   }
 
-
-
   // function used to check if sprite collides with mouse
   // pass mouse in as first parameter
   function checkMouseCollision(a, b) {
@@ -465,6 +467,7 @@
     return onigiri;
   }
 
+  // call FBInstant.loading.complete() when the game is ready to be played
   FBInstant.loading.complete();
 </script>
 </body>
