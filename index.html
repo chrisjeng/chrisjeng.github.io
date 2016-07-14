@@ -66,6 +66,8 @@ THE ABOVE CODE IS REQUIRED FOR DEPLOYING TO INSTANT GAMES! -->
 <script>
 
   function Chicken() {
+    this.blink_frequency = 130; // blink every blink_frequency ticks on average
+    this.hop_frequency = 300;
     this.foodCount = 0;
     this.hungerTimeElapsed = 0;
     this.loveTimeElapsed = 0;
@@ -91,11 +93,26 @@ THE ABOVE CODE IS REQUIRED FOR DEPLOYING TO INSTANT GAMES! -->
     var onDragMove = function() {
       if (this.dragging) {
         var mousePosition = this.data.getLocalPosition(this.parent);
-        if (checkMouseCollision(mousePosition, chicken.bodySprite)) {
+        if(checkMouseCollision(mousePosition, chicken.bodySprite) || checkMouseCollision(mousePosition, chicken.eyeSprite)) {
           console.log("petpetpet");
           chicken.increaseChickenLove();
         }
       }
+    }
+
+    this.food_nearby = false;
+    this.handleFoodNearby = function() {
+      if(this.food_nearby) {
+        this.bodySprite.texture = chickenMouthOpenTexture;
+      } else {
+        this.bodySprite.texture = chickenMouthClosedTexture;
+      }
+    }
+    this.checkNearbyMouth = function(x, y) {
+      var mouth_x = 0.59 * this.bodySprite.width + this.bodySprite.position.x;
+      var mouth_y = 0.53 * this.bodySprite.height + this.bodySprite.position.y;
+      var mouth_width = 0.19 * this.bodySprite.width;
+      this.food_nearby = mouth_x < x && mouth_x + mouth_width > x && mouth_y > y;
     }
 
     // checks collision with mouth
@@ -105,9 +122,7 @@ THE ABOVE CODE IS REQUIRED FOR DEPLOYING TO INSTANT GAMES! -->
       var mouth_y = 0.53 * this.bodySprite.height + this.bodySprite.position.y;
       var mouth_width = 0.19 * this.bodySprite.width;
       var mouth_height = 0.115 * this.bodySprite.height;
-      console.log(mouth_x, mouth_y);
-
-      return !(mouth_x > (x + width) ||
+      return !(mouth_x > x ||
              (mouth_x + mouth_width) < x ||
               mouth_y > (y + height) ||
              (mouth_y + mouth_height) < y);
@@ -187,7 +202,7 @@ THE ABOVE CODE IS REQUIRED FOR DEPLOYING TO INSTANT GAMES! -->
       this.loveTimeElapsed = 0;
       this.chickenLove += -5;
     }
-    this.bodySprite = new PIXI.Sprite(characterTexture);
+    this.bodySprite = new PIXI.Sprite(chickenMouthClosedTexture);
     this.bodySprite.anchor.x = 0.0;
     this.bodySprite.anchor.y = 0.0;
     this.bodySprite.position.x = 0.3 * width;
@@ -207,6 +222,109 @@ THE ABOVE CODE IS REQUIRED FOR DEPLOYING TO INSTANT GAMES! -->
       // events for drag move
       .on('mousemove', onDragMove)
       .on('touchmove', onDragMove);
+
+    this.eye = "eye_open";
+    this.eye_positions = {"eye_open": {x: 0.48, y: 0.42}, "eye_closed": {x: 0.48, y: 0.48}, "eye_half": {x: 0.48, y: 0.48}};
+    this.updateEyeLocation = function() {
+      var eye_x = this.eye_positions[this.eye]['x'];
+      var eye_y = this.eye_positions[this.eye]['y'];
+      this.eyeSprite.position.x = this.bodySprite.position.x + eye_x * this.bodySprite.width;
+      this.eyeSprite.position.y = this.bodySprite.position.y + eye_y * this.bodySprite.height;
+      this.eyeSprite.scale.x = this.bodySprite.scale.x;
+      this.eyeSprite.scale.y = this.bodySprite.scale.y;
+    }
+
+    this.updateSprites = function(ticks) {
+      if (!this.is_blinking && ticks % this.blink_frequency == randomNumber(0, this.blink_frequency)) {
+        this.is_blinking = true;
+      }
+      if (!this.food_nearby && !this.is_hopping && ticks % this.hop_frequency == randomNumber(0, this.hop_frequency)) {
+        this.start_hop(ticks);
+      }
+      this.blink(ticks);
+      this.hop(ticks);
+      this.handleFoodNearby();
+      chicken.updateEyeLocation();
+    }
+
+    this.is_blinking = false;
+    this.blink_stage = 0; // open, half, close, half
+    this.blink = function(ticks) {
+      if (this.is_blinking == false || ticks % 3 != 0) {
+        return;
+      }
+      switch (this.blink_stage) {
+        case 0:
+          this.eyeSprite.texture = chickenEyeHalfOpenTexture;
+          this.eye = "eye_half";
+          break;
+        case 1:
+          this.eyeSprite.texture = chickenEyeClosedTexture;
+          this.eye = "eye_closed";
+          break;
+        case 2:
+          this.eyeSprite.texture = chickenEyeHalfOpenTexture;
+          this.eye = "eye_half";
+          break;
+        case 3:
+          this.eyeSprite.texture = chickenEyeOpenTexture;
+          this.eye = "eye_open";
+          break;
+      }
+      this.blink_stage++;
+      if (this.blink_stage > 3) {
+        this.blink_stage = 0;
+        this.is_blinking = false;
+      }
+    }
+
+    this.is_hopping = false;
+    this.hop_stage = 0;
+    this.start_hop_tick = 0;
+    this.location = 0; // 0 is on the right side, 1 is on the left side
+    this.hop_ticks = 30; // amount of ticks it takes for a hop
+    this.start_hop = function(ticks) {
+      this.start_hop_tick = ticks;
+      this.is_hopping = true;
+      this.hop_stage = 0;
+    }
+    this.stop_hop = function() {
+      this.is_hopping = false;
+      this.location = 1 - this.location;
+    }
+    this.hop = function(ticks) {
+      if (!this.is_hopping) {
+        return;
+      }
+      var curr_tick = ticks - this.start_hop_tick;
+      if (this.location == 0) {
+        this.bodySprite.position.x -= 2;
+      } else {
+        this.bodySprite.position.x += 2;
+      }
+      if (curr_tick > this.hop_ticks / 2) {
+        this.bodySprite.position.y += 0.05 * Math.pow(curr_tick - 15, 2)
+      } else {
+        this.bodySprite.position.y -= 0.05 * Math.pow(curr_tick - 15, 2)
+      }
+      if (curr_tick >= this.hop_ticks) {
+        this.stop_hop();
+      }
+
+    }
+
+    this.eyeSprite = new PIXI.Sprite(chickenEyeOpenTexture);
+    this.eyeSprite.on('mousedown', onDragStart)
+      .on('touchstart', onDragStart)
+      // events for drag end
+      .on('mouseup', onDragEnd)
+      .on('mouseupoutside', onDragEnd)
+      .on('touchend', onDragEnd)
+      .on('touchendoutside', onDragEnd)
+      // events for drag move
+      .on('mousemove', onDragMove)
+      .on('touchmove', onDragMove);
+
   }
 
   var level = 0;
@@ -218,7 +336,13 @@ THE ABOVE CODE IS REQUIRED FOR DEPLOYING TO INSTANT GAMES! -->
   var stage = new PIXI.Container();
 
   // Initialize textures
-  var characterTexture = PIXI.Texture.fromImage('assets/img/chicken/chicken2_black.png');
+  var chickenMouthClosedTexture = PIXI.Texture.fromImage('assets/img/chicken/chicken2_mouth_closed.png');
+  var chickenMouthOpenTexture = PIXI.Texture.fromImage('assets/img/chicken/chicken2_mouth_open.png');
+  var chickenEyeOpenTexture = PIXI.Texture.fromImage('assets/img/chicken/eye_normal1.png');
+  var chickenEyeHalfOpenTexture = PIXI.Texture.fromImage('assets/img/chicken/eye_half.png');
+  var chickenEyeClosedTexture = PIXI.Texture.fromImage('assets/img/chicken/eye_closed.png');
+  var chickenEyeHappyTexture = PIXI.Texture.fromImage('assets/img/chicken/eye_happy.png');
+  var chickenEyeSadTexture = PIXI.Texture.fromImage('assets/img/chicken/eye_sad.png');
   var foodTexture = PIXI.Texture.fromImage('assets/img/food/fries.png');
   var barnTexture = PIXI.Texture.fromImage('assets/img/background/barn.png');
   var cloudTexture = PIXI.Texture.fromImage('assets/img/background/cloud3.png');
@@ -333,8 +457,9 @@ THE ABOVE CODE IS REQUIRED FOR DEPLOYING TO INSTANT GAMES! -->
 
   // create a texture from an image path
   var foods = []; // Keeps track of all food on screen
-  var chicken = new Chicken();
+  var chicken = new Chicken()
   stage.addChild(chicken.bodySprite);
+  stage.addChild(chicken.eyeSprite);
   var score = 0;
   var text = new PIXI.Text(score, {font : '36px Arvo', fill : 0x000000, align : 'center'});
   var scoreBorderWidth = 10;
@@ -392,6 +517,7 @@ THE ABOVE CODE IS REQUIRED FOR DEPLOYING TO INSTANT GAMES! -->
 
     hungerSeconds = ++chicken.hungerTimeElapsed/60;
     loveSeconds = ++chicken.loveTimeElapsed/60;
+    chicken.updateSprites(ticks);
     requestAnimationFrame(animate);
     updateFoodMovementPositions();
     checkTimeElapsed(hungerSeconds, loveSeconds);
@@ -419,8 +545,10 @@ THE ABOVE CODE IS REQUIRED FOR DEPLOYING TO INSTANT GAMES! -->
   }
 
   function updateFoodMovementPositions() {
+    chicken.food_nearby = false;
     for (var i = 0; i < foods.length; i++) {
       foods[i].position.y += 3;
+      chicken.checkNearbyMouth(foods[i].position.x, foods[i].position.y);
       if (foods[i].position.y > height) {
         removeFood(foods[i]);
       }
