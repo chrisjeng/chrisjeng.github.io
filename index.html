@@ -7,7 +7,8 @@
 <script src="https://www.facebook.com/assets.php/en_US/fbinstant.js"></script>
 
 <!-- Setup the fb canvas SDK for JS -->
-<!-- <script>
+<!-- THE BELOW CODE IS REQUIRED FOR DEPLOYING ON INSTANT GAMES!
+<script>
   window.fbAsyncInit = function() {
     FB.init({
       appId      : '653690181461812',
@@ -25,7 +26,36 @@
      js.src = "//connect.facebook.net/en_US/sdk.js";
      fjs.parentNode.insertBefore(js, fjs);
    }(document, 'script', 'facebook-jssdk'));
-</script> -->
+
+   // Place following code after FB.init call.
+
+   function onLogin(response) {
+     if (response.status == 'connected') {
+       FB.api('/me?fields=first_name', function(data) {
+         var welcomeBlock = document.getElementById('fb-welcome');
+         welcomeBlock.innerHTML = 'Hello, ' + data.first_name + '!';
+       });
+     }
+   }
+
+   FB.getLoginStatus(function(response) {
+     // Check login status on load, and if the user is
+     // already logged in, go directly to the welcome message.
+     if (response.status == 'connected') {
+       onLogin(response);
+     } else {
+       // Otherwise, show Login dialog first.
+       FB.login(function(response) {
+         onLogin(response);
+       }, {scope: 'user_friends, email'});
+     }
+   });
+</script>
+
+THE ABOVE CODE IS REQUIRED FOR DEPLOYING TO INSTANT GAMES! -->
+
+<!-- Greet the user -->
+<h1 id="fb-welcome"></h1>
 
 <!-- Used as our main engine -->
 <script src="assets/js/pixi.js"></script>
