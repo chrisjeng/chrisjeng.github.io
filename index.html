@@ -1,6 +1,7 @@
 <html>
 <body>
 <script src="pixi.js"></script>
+<script src="sound.js"></script>
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
 <script>window.jQuery || document.write('<script src="js/vendor/jquery-1.8.3.min.js"><\/script>')</script>
 <script>
@@ -18,7 +19,6 @@
   var stage = new PIXI.Container();
 
   // Initialize textures
-  var foodTexture = PIXI.Texture.fromImage('assets/img/bunny.png');
   var characterTexture = PIXI.Texture.fromImage('assets/img/chicken/chicken_eyes_open.png');
 
   // init heart/hunger textures
@@ -33,13 +33,28 @@
   var hunger75 = PIXI.Texture.fromImage('assets/img/hunger/hunger75.png');
   var hunger100 = PIXI.Texture.fromImage('assets/img/hunger/hunger100.png');
 
-
-  var renderer = PIXI.autoDetectRenderer(width, height,{backgroundColor : 0x1099bb});
-  var backgroundTile = new PIXI.extras.TilingSprite(foodTexture, renderer.width, renderer.height);
-  backgroundTile.tileScale.x = 0.05;
-  backgroundTile.tileScale.y = 0.05;
-  stage.addChild(backgroundTile);
+  // Create background and renderer for image
+  var renderer = PIXI.autoDetectRenderer(width, height,{backgroundColor : 0x81D4FA});
   document.body.appendChild(renderer.view);
+  var grass = new PIXI.Graphics();
+  grass.beginFill(0x00C853);
+  grass.drawRect(0, height - 0.3 * height, width, 0.3 * height);
+  grass.endFill();
+  stage.addChild(grass);
+
+  // Load the sounds
+  sounds.load([
+    "assets/sound/bite.mp3",
+  ]);
+
+  // Callback function for when sounds have been loaded
+  sounds.whenLoaded = setupSounds;
+
+  // Initialize sounds here
+  var bite;
+  function setupSounds() {
+    bite = sounds["assets/sound/bite.mp3"];
+  }
 
   // create a texture from an image path
   var foods = [];
@@ -139,6 +154,7 @@
       }
       else if (checkCollision(chicken, foods[i])) {
         removeFood(foods[i]);
+        bite.play();
         if (++foodCount == 2) {
           updateChickenWeight(5);
           foodCount = 0;
@@ -184,7 +200,6 @@
         console.log(weight);
         break;
       case 100:
-        // explosion
         console.log(weight);
         break;
       default:
