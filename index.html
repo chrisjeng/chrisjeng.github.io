@@ -19,8 +19,9 @@
   var stage = new PIXI.Container();
 
   // Initialize textures
-  var characterTexture = PIXI.Texture.fromImage('assets/img/chicken/chicken2_mouth_closed.png');
+  var characterTexture = PIXI.Texture.fromImage('assets/img/chicken/chicken2_black.png');
   var foodTexture = PIXI.Texture.fromImage('assets/img/food/fries.png');
+  var barnTexture = PIXI.Texture.fromImage('assets/img/barn.png');
 
   // init heart/hunger textures
   var heart0 = PIXI.Texture.fromImage('assets/img/heart/heart0.png');
@@ -43,11 +44,13 @@
   // Create background and renderer for image
   var renderer = PIXI.autoDetectRenderer(width, height,{backgroundColor : 0x81D4FA});
   document.body.appendChild(renderer.view);
+
   var grass = new PIXI.Graphics();
   grass.beginFill(0x00C853);
   grass.drawRect(0, height - 0.3 * height, width, 0.3 * height);
   grass.endFill();
   stage.addChild(grass);
+
   var line = new PIXI.Graphics();
   line.lineStyle(4, 0x000000, 1);
   line.moveTo(0, 0);
@@ -55,6 +58,12 @@
   line.x = 0;
   line.y = height - 0.3 * height;
   stage.addChild(line);
+
+  var barn = new PIXI.Sprite(barnTexture);
+  barn.scale.set(0.2, 0.2);
+  barn.position.x = 0.05 * width;
+  barn.position.y = 0.455 * height;
+  stage.addChild(barn);
 
 
   // Load the sounds
@@ -128,8 +137,8 @@
     var x = e.offsetX;
     var y = e.offsetY;
     var food = new PIXI.Sprite(foodTexture);
-    food.scale.x = 0.15;
-    food.scale.y = 0.15;
+    food.scale.x = 0.12;
+    food.scale.y = 0.12;
     food.position.x = x;
     food.position.y = y;
     foods.push(food);
