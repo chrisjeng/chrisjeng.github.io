@@ -161,8 +161,8 @@
   $(renderer.view).mousedown(function(e) {
     var x = e.offsetX;
     var y = e.offsetY;
-    food.scale.x = 0.12;
-    food.scale.y = 0.12;
+    // food.scale.x = 0.12;
+    // food.scale.y = 0.12;
     food.position.x = x;
     food.position.y = y;
     foods.push(food);
@@ -282,15 +282,15 @@
     rand = randomNumber(0, 4);
     switch(rand) {
       case 0:
-        return new PIXI.Sprite(food_fries);
+        return getFries();
       case 1:
-        return new PIXI.Sprite(food_hamburger);
+        return getHamburger();
       case 2:
-        return new PIXI.Sprite(food_hotdog);
+        return getHotdog();
       case 3:
-        return new PIXI.Sprite(food_onigiri);
+        return getOnigiri();
       case 4:
-        return new PIXI.Sprite(food_pringle);
+        return getPringle();
     }
     return "Should not reach this point in getRandomFood!";
   }
@@ -398,6 +398,42 @@
             (b.position.x + b.width) < a.x ||
              b.position.y > a.y ||
             (b.position.y + b.height) < a.y);
+  }
+
+  // food functions that return a properly sized food sprite
+  function getPringle() {
+    var pringle = new PIXI.Sprite(food_pringle);
+    pringle.scale.x = .2;
+    pringle.scale.y = .2;
+    return pringle;
+  }
+
+  function getFries() {
+    var fries = new PIXI.Sprite(food_fries);
+    fries.scale.x = .12;
+    fries.scale.y = .12;
+    return fries;
+  }
+
+  function getHamburger() {
+    var hamburger = new PIXI.Sprite(food_hamburger);
+    hamburger.scale.x = .1;
+    hamburger.scale.y = .1;
+    return hamburger;
+  }
+
+  function getHotdog() {
+    var hotdog = new PIXI.Sprite(food_hotdog);
+    hotdog.scale.x = .15;
+    hotdog.scale.y = .15;
+    return hotdog;
+  }
+
+  function getOnigiri() {
+    var onigiri = new PIXI.Sprite(food_onigiri);
+    onigiri.scale.x = .1;
+    onigiri.scale.y = .1;
+    return onigiri;
   }
 </script>
 </body>
