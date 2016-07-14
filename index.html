@@ -69,8 +69,21 @@
 
   var cloud = new PIXI.Sprite(cloudTexture);
   cloud.scale.set(0.25, 0.25);
+  cloud.position.x = width * 0.05;
+  cloud.position.y = height * 0.05;
   stage.addChild(cloud);
 
+  var cloud2 = new PIXI.Sprite(cloudTexture);
+  cloud2.scale.set(0.10, 0.10);
+  cloud2.position.x = width * 0.45;
+  cloud2.position.y = height * 0.04;
+  stage.addChild(cloud2);
+
+  var cloud3 = new PIXI.Sprite(cloudTexture);
+  cloud3.scale.set(-0.2, 0.2);
+  cloud3.position.x = width * 0.75;
+  cloud3.position.y = height * 0.09;
+  stage.addChild(cloud3);
 
   // Load the sounds
   sounds.load([
@@ -142,7 +155,7 @@
   $(renderer.view).mousedown(function(e) {
     var x = e.offsetX;
     var y = e.offsetY;
-    var food = new PIXI.Sprite(foodTexture);
+    var food = getRandomFood();
     food.scale.x = 0.12;
     food.scale.y = 0.12;
     food.position.x = x;
