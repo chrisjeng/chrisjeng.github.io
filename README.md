@@ -14,3 +14,12 @@ Currently, Chrome doesn't render the images correctly....
 - Don't overfeed the chicken!
 - Keep the chicken alive for as long as you can!
 
+## TODO
+- Text to show warnings about dying
+- A start menu
+- Some sort of intuitive tutorial thing
+- Use sounds. For example when the heart gets empty 
+- Exploding death from overeating
+- Heartbroken chicken
+- Starving chicken
+- Food images (Kat is working on it...)
