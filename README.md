@@ -15,10 +15,10 @@ Currently, Chrome doesn't render the images correctly....
 - Keep the chicken alive for as long as you can!
 
 ## TODO
-- Need to add some sort of guide-rails to ensure people don't let the chicken die. For example, if the chicken is starving early game, tell them to feed the chicken by clicking. Show warnings when the chicken is about to die. This might require some sort of pause concept.
-- A start menu. The game doesn't start until the start button is pressed, and the game should pause when the game is over.
-- Use sounds. For example when the heart gets empty, have some sort of heartbroken sound. Also eating sounds.
-- Exploding death from overeating
-- Heartbroken chicken death
-- Starving chicken death
-- Ensure all food images are of similar-ish size
+- (Angel) Chicken needs to get fatter upon eating
+- (Chris) Mix down audio to lower bitrate. We need to reach <5MB total size
+- (Devin) Chicken needs to blink occasionally
+- (Open) Need some sort of guidelines/pop up text to help people keep the chicken alive. For example, if the chicken is starving early game, tell them to feed the chicken by clicking. Show warnings when the chicken is about to die.
+- (Open) Use sound effects.
+- (Open) Exploding death from overeating. Heartbroken chicken death. Starving chicken death. (Chicken cannot die from too much love)
+- (Chris) Port the game over to Facebook platform
