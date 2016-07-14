@@ -108,29 +108,29 @@
   stage.addChild(text);
 
   // display the heart logo at 100%
-  var heartTexture = heart50;
+  var heartTexture = heart100;
   var heart = new PIXI.Sprite(heartTexture);
 
   // hard coded values
-  heart.height = 50;
-  heart.width = 50;
+  heart.height = 90;
+  heart.width = 90;
   heart.anchor.x = 0.5;
   heart.anchor.y = 0.5;
-  heart.position.x = 0.875 * width;
-  heart.position.y = 0.6 * height;
+  heart.position.x = 0.87 * width;
+  heart.position.y = 0.15 * height;
   stage.addChild(heart);
 
   // display the hunger logo at 100%
-  var hungerTexture = hunger50;
+  var hungerTexture = hunger100;
   var hunger = new PIXI.Sprite(hungerTexture);
 
   // hard coded values
-  hunger.height = 50;
-  hunger.width = 50;
+  hunger.height = 90;
+  hunger.width = 90;
   hunger.anchor.x = 0.5;
   hunger.anchor.y = 0.5;
-  hunger.position.x = 0.875 * width;
-  hunger.position.y = 0.8 * height;
+  hunger.position.x = 0.87 * width;
+  hunger.position.y = 0.37 * height;
   stage.addChild(hunger);
 
   $(renderer.view).mousedown(function(e) {
