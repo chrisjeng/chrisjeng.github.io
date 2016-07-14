@@ -19,7 +19,8 @@
   var stage = new PIXI.Container();
 
   // Initialize textures
-  var characterTexture = PIXI.Texture.fromImage('assets/img/chicken/chicken_eyes_open.png');
+  var characterTexture = PIXI.Texture.fromImage('assets/img/chicken/chicken2_mouth_closed.png');
+  var foodTexture = PIXI.Texture.fromImage('assets/img/bunny.png');
 
   // init heart/hunger textures
   var heart0 = PIXI.Texture.fromImage('assets/img/heart/heart0.png');
@@ -41,6 +42,14 @@
   grass.drawRect(0, height - 0.3 * height, width, 0.3 * height);
   grass.endFill();
   stage.addChild(grass);
+  var line = new PIXI.Graphics();
+  line.lineStyle(4, 0x000000, 1);
+  line.moveTo(0, 0);
+  line.lineTo(width, 0);
+  line.x = 0;
+  line.y = height - 0.3 * height;
+  stage.addChild(line);
+
 
   // Load the sounds
   sounds.load([
@@ -61,10 +70,10 @@
   var chicken = new PIXI.Sprite(characterTexture);
   chicken.anchor.x = 0.0;
   chicken.anchor.y = 0.0;
-  chicken.position.x = 0.25 * width;
-  chicken.position.y = 0.35 * height;
-  chicken.scale.x = 0.7;
-  chicken.scale.y = 0.7;
+  chicken.position.x = 0.3 * width;
+  chicken.position.y = 0.3 * height;
+  chicken.scale.x = 0.42;
+  chicken.scale.y = 0.42;
   chicken.interactive = true;
   chicken.buttonMode = true;
   // set up dragging for chicken
@@ -93,7 +102,7 @@
   heart.anchor.x = 0.5;
   heart.anchor.y = 0.5;
   heart.position.x = 0.875 * width;
-  heart.position.y = 0.65 * height;
+  heart.position.y = 0.6 * height;
   stage.addChild(heart);
 
   // display the hunger logo at 100%
