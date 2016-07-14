@@ -16,6 +16,7 @@
   var chickenLove = 50;
   var hungerSeconds = 0;
   var loveSeconds = 0;
+  var ticks = 0;
   var stage = new PIXI.Container();
 
   // Initialize textures
@@ -148,14 +149,23 @@
   // start animating
   animate();
   function animate() {
+    ++ticks;
+    if (ticks % 60 == 0) {
+      runOnceASecond();
+    }
     hungerSeconds = ++hungerTimeElapsed/60;
     loveSeconds = ++loveTimeElapsed/60;
     requestAnimationFrame(animate);
-    checkFoodPositions();
+    updateFoodMovementPositions();
     checkTimeElapsed(hungerSeconds, loveSeconds);
     text.text = score;
     // render the container
     renderer.render(stage);
+  }
+
+  // This function runs once a second
+  function runOnceASecond() {
+    // Put your every-second job in here.
   }
 
   function checkTimeElapsed(hungerSeconds, loveSeconds) {
@@ -170,10 +180,10 @@
     // if no action has been taken on love, update the chicken love
   }
 
-  function checkFoodPositions() {
+  function updateFoodMovementPositions() {
     for (var i = 0; i < foods.length; i++) {
       foods[i].position.y += 3;
-      if (foods[i].position.y > 600) {
+      if (foods[i].position.y > height) {
         removeFood(foods[i]);
       }
       else if (checkCollision(chicken, foods[i])) {
@@ -238,14 +248,27 @@
     foods.splice(i, 1);
   }
 
+  // Gets you a random number between min and max
+  function randomNumber(min, max) {
+    return Math.floor(Math.random() * (1 + max - min) + min);
+	}
+
   // Returns you a random Pixi sprite of food.
   function getRandomFood() {
-    rand = 0;
+    rand = randomNumber(0, 4);
     switch(rand) {
       case 0:
-        return new PIXI.Sprite(food_fries)
+        return new PIXI.Sprite(food_fries);
+      case 1:
+        return new PIXI.Sprite(food_hamburger);
+      case 2:
+        return new PIXI.Sprite(food_hotdog);
+      case 3:
+        return new PIXI.Sprite(food_onigiri);
+      case 4:
+        return new PIXI.Sprite(food_pringle);
     }
-    return null;
+    return "Should not reach this point in getRandomFood!";
   }
 
   function checkCollision(a, b) {
