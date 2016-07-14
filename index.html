@@ -83,10 +83,11 @@
   stage.addChild(cloud2);
 
   var cloud3 = new PIXI.Sprite(cloudTexture);
-  cloud3.scale.set(-0.2, 0.2);
-  cloud3.position.x = width * 0.75;
+  cloud3.scale.set(0.2, 0.2);
+  cloud3.position.x = width * 0.6;
   cloud3.position.y = height * 0.09;
   stage.addChild(cloud3);
+
 
   // Load the sounds
   sounds.load([
