@@ -9,17 +9,138 @@
 <script>window.jQuery || document.write('<script src="js/vendor/jquery-1.8.3.min.js"><\/script>')</script>
 <script>
 
+  function Chicken() {
+    this.foodCount = 0;
+    this.hungerTimeElapsed = 0;
+    this.loveTimeElapsed = 0;
+    this.chickenWeight = 50;
+    this.chickenLove = 50;
+    // petting event listener
+    var onDragStart = function(event) {
+      // store a reference to the data
+      this.data = event.data;
+      this.dragging = true;
+    }
+
+    var onDragEnd = function() {
+      this.dragging = false;
+      // set the interaction data to null
+      this.data = null;
+      console.log(chicken.chickenLove);
+    }
+
+    // on drag, check to see if mouse is still colliding w/ chicken
+    var onDragMove = function() {
+      if (this.dragging)
+      {
+        var mousePosition = this.data.getLocalPosition(this.parent);
+        if(checkMouseCollision(mousePosition, chicken.bodySprite)) {
+          console.log("petpetpet");
+          chicken.increaseChickenLove();
+        }
+      }
+    }
+    // resizes chicken based on hunger and love
+    this.resizeChicken = function(weight) {
+      switch(weight) {
+        case 0:
+          // dead
+          console.log(weight);
+          break;
+        case 10:
+          console.log(weight);
+          break;
+        case 20:
+          console.log(weight);
+          break;
+        case 30:
+          console.log(weight);
+          break;
+        case 40:
+          console.log(weight);
+          break;
+        case 50:
+          console.log(weight);
+          break;
+        case 60:
+          console.log(weight);
+          break;
+        case 70:
+          console.log(weight);
+          break;
+        case 80:
+          console.log(weight);
+          break;
+        case 90:
+          console.log(weight);
+          break;
+        case 100:
+          console.log(weight);
+          break;
+        default:
+          console.log(weight);
+          break;
+      }
+    }
+
+    // updates chicken weight with the given value! aka feed chicken
+    this.updateChickenWeight = function(foodValue){
+      this.chickenWeight += foodValue;
+      if(this.chickenWeight > 100){
+        this.chickenWeight = 100;
+      }
+      this.resizeChicken(this.chickenWeight);
+      this.hungerTimeElapsed = 0;
+    }
+
+    // function called when user pets chicken
+    this.increaseChickenLove = function() {
+      if(this.chickenLove > 0 && this.chickenLove <= 30){
+        this.chickenLove += .75;
+      }
+      else if(this.chickenLove > 30 && this.chickenLove <= 50){
+        this.chickenLove += .5;
+      }
+      else if(this.chickenLove > 50){
+        this.chickenLove += .25;
+      }
+      if(this.chickenLove > 100){
+        this.chickenLove = 100;
+      }
+    }
+
+    this.decreaseChickenLove = function() {
+      this.loveTimeElapsed = 0;
+      this.chickenLove += -5;
+    }
+    this.bodySprite = new PIXI.Sprite(characterTexture);
+    this.bodySprite.anchor.x = 0.0;
+    this.bodySprite.anchor.y = 0.0;
+    this.bodySprite.position.x = 0.3 * width;
+    this.bodySprite.position.y = 0.3 * height;
+    this.bodySprite.scale.x = 0.42;
+    this.bodySprite.scale.y = 0.42;
+    this.bodySprite.interactive = true;
+    this.bodySprite.buttonMode = true;
+    // set up dragging for chicken
+    this.bodySprite.on('mousedown', onDragStart)
+      .on('touchstart', onDragStart)
+      // events for drag end
+      .on('mouseup', onDragEnd)
+      .on('mouseupoutside', onDragEnd)
+      .on('touchend', onDragEnd)
+      .on('touchendoutside', onDragEnd)
+      // events for drag move
+      .on('mousemove', onDragMove)
+      .on('touchmove', onDragMove);
+  }
+
   var level = 0;
-  var foodCount = 0;
-  var hungerTimeElapsed = 0;
-  var loveTimeElapsed = 0;
   var width = 640;
   var height = 480;
-  var chickenWeight = 50;
-  var chickenLove = 50;
+  var ticks = 0;
   var hungerSeconds = 0;
   var loveSeconds = 0;
-  var ticks = 0;
   var stage = new PIXI.Container();
 
   // Initialize textures
@@ -105,27 +226,8 @@
 
   // create a texture from an image path
   var foods = [];
-  var chicken = new PIXI.Sprite(characterTexture);
-  chicken.anchor.x = 0.0;
-  chicken.anchor.y = 0.0;
-  chicken.position.x = 0.3 * width;
-  chicken.position.y = 0.3 * height;
-  chicken.scale.x = 0.42;
-  chicken.scale.y = 0.42;
-  chicken.interactive = true;
-  chicken.buttonMode = true;
-  // set up dragging for chicken
-  chicken.on('mousedown', onDragStart)
-    .on('touchstart', onDragStart)
-    // events for drag end
-    .on('mouseup', onDragEnd)
-    .on('mouseupoutside', onDragEnd)
-    .on('touchend', onDragEnd)
-    .on('touchendoutside', onDragEnd)
-    // events for drag move
-    .on('mousemove', onDragMove)
-    .on('touchmove', onDragMove);
-  stage.addChild(chicken);
+  var chicken = new Chicken()
+  stage.addChild(chicken.bodySprite);
   var score = 0;
   var text = new PIXI.Text(score, {font : '24px Arial', fill : 0x000000, align : 'center'});
   stage.addChild(text);
@@ -177,8 +279,8 @@
     if (ticks % 60 == 0) {
       runOnceASecond();
     }
-    hungerSeconds = ++hungerTimeElapsed/60;
-    loveSeconds = ++loveTimeElapsed/60;
+    hungerSeconds = ++chicken.hungerTimeElapsed/60;
+    loveSeconds = ++chicken.loveTimeElapsed/60;
     requestAnimationFrame(animate);
     updateFoodMovementPositions();
     checkTimeElapsed(hungerSeconds, loveSeconds);
@@ -195,10 +297,12 @@
   function checkTimeElapsed(hungerSeconds, loveSeconds) {
     // if no action has been taken on hunger, make chicken skinnier
     if (hungerSeconds > 2.5) {
-      updateChickenWeight(-5);
+      chicken.updateChickenWeight(-5);
+      setHungerLevel(chicken.chickenWeight);
     }
     if(loveSeconds > 2.5){
-      decreaseChickenLove();
+      chicken.decreaseChickenLove();
+      setLoveIcon(chicken.chickenLove);
     }
 
     // if no action has been taken on love, update the chicken love
@@ -210,12 +314,13 @@
       if (foods[i].position.y > height) {
         removeFood(foods[i]);
       }
-      else if (checkCollision(chicken, foods[i])) {
+      else if (checkCollision(chicken.bodySprite, foods[i])) {
         removeFood(foods[i]);
         bite.play();
-        if (++foodCount == 2) {
-          updateChickenWeight(5);
-          foodCount = 0;
+        if (++chicken.foodCount == 2) {
+          chicken.updateChickenWeight(5);
+          setHungerLevel(chicken.chickenWeight);
+          chicken.foodCount = 0;
           seconds = 0;
         }
         score++;
@@ -223,48 +328,6 @@
     }
   }
 
-  // resizes chicken based on hunger and love
-  function resizeChicken(weight) {
-    switch(weight) {
-      case 0:
-        // dead
-        console.log(weight);
-        break;
-      case 10:
-        console.log(weight);
-        break;
-      case 20:
-        console.log(weight);
-        break;
-      case 30:
-        console.log(weight);
-        break;
-      case 40:
-        console.log(weight);
-        break;
-      case 50:
-        console.log(weight);
-        break;
-      case 60:
-        console.log(weight);
-        break;
-      case 70:
-        console.log(weight);
-        break;
-      case 80:
-        console.log(weight);
-        break;
-      case 90:
-        console.log(weight);
-        break;
-      case 100:
-        console.log(weight);
-        break;
-      default:
-        console.log(weight);
-        break;
-    }
-  }
 
   function removeFood(food) {
     stage.removeChild(food);
@@ -302,16 +365,6 @@
             (b.position.y + b.height) < a.position.y);
   }
 
-  // updates chicken weight with the given value! aka feed chicken
-  function updateChickenWeight(foodValue){
-    chickenWeight += foodValue;
-    if(chickenWeight > 100){
-      chickenWeight = 100;
-    }
-    resizeChicken(chickenWeight);
-    setHungerLevel(chickenWeight);
-    hungerTimeElapsed = 0;
-  }
 
   // replaces the hunger icon with the appropriate icon
   function setHungerLevel(hungerLevel) {
@@ -343,53 +396,7 @@
     }
   }
 
-  // function called when user pets chicken
-  function increaseChickenLove() {
-    if(chickenLove > 0 && chickenLove <= 30){
-      chickenLove += .75;
-    }
-    else if(chickenLove > 30 && chickenLove <= 50){
-      chickenLove += .5;
-    }
-    else if(chickenLove > 50){
-      chickenLove += .25;
-    }
-    if(chickenLove > 100){
-      chickenLove = 100;
-    }
-  }
 
-  function decreaseChickenLove() {
-    loveTimeElapsed = 0;
-    chickenLove += -5;
-    setLoveIcon(chickenLove);
-  }
-
-  // petting event listener
-  function onDragStart(event) {
-    // store a reference to the data
-    this.data = event.data;
-    this.dragging = true;
-  }
-
-  function onDragEnd() {
-    this.dragging = false;
-    // set the interaction data to null
-    this.data = null;
-    console.log(chickenLove);
-  }
-
-  // on drag, check to see if mouse is still colliding w/ chicken
-  function onDragMove() {
-    if (this.dragging)
-    {
-      var mousePosition = this.data.getLocalPosition(this.parent);
-      if(checkMouseCollision(mousePosition, chicken)) {
-        console.log("petpetpet");
-        increaseChickenLove();
-      }
-    }
-  }
 
   // function used to check if sprite collides with mouse
   // pass mouse in as first parameter
