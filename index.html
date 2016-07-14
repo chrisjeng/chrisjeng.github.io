@@ -20,7 +20,7 @@
 
   // Initialize textures
   var characterTexture = PIXI.Texture.fromImage('assets/img/chicken/chicken2_mouth_closed.png');
-  var foodTexture = PIXI.Texture.fromImage('assets/img/bunny.png');
+  var foodTexture = PIXI.Texture.fromImage('assets/img/food/fries.png');
 
   // init heart/hunger textures
   var heart0 = PIXI.Texture.fromImage('assets/img/heart/heart0.png');
@@ -33,6 +33,12 @@
   var hunger50 = PIXI.Texture.fromImage('assets/img/hunger/hunger50.png');
   var hunger75 = PIXI.Texture.fromImage('assets/img/hunger/hunger75.png');
   var hunger100 = PIXI.Texture.fromImage('assets/img/hunger/hunger100.png');
+
+  var food_fries = PIXI.Texture.fromImage('assets/img/food/fries.png')
+  var food_hamburger = PIXI.Texture.fromImage('assets/img/food/hamburger.png')
+  var food_hotdog = PIXI.Texture.fromImage('assets/img/food/hotdog.png')
+  var food_onigiri = PIXI.Texture.fromImage('assets/img/food/onigiri.png')
+  var food_pringle = PIXI.Texture.fromImage('assets/img/food/pringle.png')
 
   // Create background and renderer for image
   var renderer = PIXI.autoDetectRenderer(width, height,{backgroundColor : 0x81D4FA});
@@ -221,6 +227,16 @@
     stage.removeChild(food);
     i = foods.indexOf(food);
     foods.splice(i, 1);
+  }
+
+  // Returns you a random Pixi sprite of food.
+  function getRandomFood() {
+    rand = 0;
+    switch(rand) {
+      case 0:
+        return new PIXI.Sprite(food_fries)
+    }
+    return null;
   }
 
   function checkCollision(a, b) {
