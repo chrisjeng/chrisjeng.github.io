@@ -283,20 +283,53 @@ THE ABOVE CODE IS REQUIRED FOR DEPLOYING TO INSTANT GAMES! -->
   cloud3.position.y = height * 0.09;
   stage.addChild(cloud3);
 
-
   // Load the sounds
   sounds.load([
     "assets/sound/bite.mp3",
+    "assets/sound/happy_trill.mp3",
+    "assets/sound/casual_bwuk.mp3",
+    "assets/sound/casual_bwuk2.mp3",
+    "assets/sound/inquisitive_caw.mp3",
+    "assets/sound/whine7_monotone.mp3",
+    "assets/sound/dying_bwuk.mp3",
+    "assets/sound/music/ChikenTheme.mp3",
+    "assets/sound/whine8.mp3",
   ]);
 
   // Callback function for when sounds have been loaded
   sounds.whenLoaded = setupSounds;
 
+  // sound timer keeps track of when last sound was played
+  // last sound keeps track of which sound was played last
+  var soundTimer = 0;
+  var lastSound;
   // Initialize sounds here
   var bite;
+  var happyTrill;
+  var bwuk;
+  var shortBwuk;
+  var cuteCaw;
+  var whineHungry;
+  var whineLove;
+  var retch;
+  var bgMusic = sounds["assets/sound/music/ChikenTheme.mp3"];
   function setupSounds() {
     bite = sounds["assets/sound/bite.mp3"];
+    happyTrill = sounds["assets/sound/happy_trill.mp3"];
+    bwuk = sounds["assets/sound/casual_bwuk.mp3"];
+    shortBwuk = sounds["assets/sound/casual_bwuk2.mp3"];
+    cuteCaw = sounds["assets/sound/inquisitive_caw.mp3"];
+    whineHungry = sounds["assets/sound/whine7_monotone.mp3"];
+    whineLove = sounds["assets/sound/whine8.mp3"];
+    retch = sounds["assets/sound/dying_bwuk.mp3"];
+
+    // loop bg music
+    bgMusic.play();
+    bwuk.play();
   }
+  // loop bg music and make it half volume
+  bgMusic.loop = true;
+  bgMusic.volume = 1;
 
   // create a texture from an image path
   var foods = []; // Keeps track of all food on screen
@@ -356,6 +389,7 @@ THE ABOVE CODE IS REQUIRED FOR DEPLOYING TO INSTANT GAMES! -->
     if (ticks % 60 == 0) {
       runOnceASecond();
     }
+
     hungerSeconds = ++chicken.hungerTimeElapsed/60;
     loveSeconds = ++chicken.loveTimeElapsed/60;
     requestAnimationFrame(animate);
@@ -381,7 +415,6 @@ THE ABOVE CODE IS REQUIRED FOR DEPLOYING TO INSTANT GAMES! -->
       chicken.decreaseChickenLove();
       setLoveIcon(chicken.chickenLove);
     }
-
     // if no action has been taken on love, update the chicken love
   }
 
@@ -447,14 +480,31 @@ THE ABOVE CODE IS REQUIRED FOR DEPLOYING TO INSTANT GAMES! -->
   function setHungerLevel(hungerLevel) {
     if (hungerLevel == 0){
       hunger.texture = hunger0;
-    } else if (hungerLevel > 0 && hungerLevel < 25){
+    } else if(hungerLevel > 0 && hungerLevel < 25){
+      attemptNoise(whineHungry);
       hunger.texture = hunger25;
     } else if (hungerLevel >= 25 && hungerLevel < 50) {
       hunger.texture = hunger50;
-    } else if (hungerLevel >= 50 && hungerLevel < 75){
+    } else if(hungerLevel >= 50 && hungerLevel < 75){
+      attemptNoise(shortBwuk);
       hunger.texture = hunger75;
     } else if (hungerLevel >= 75 && hungerLevel <= 100){
       hunger.texture = hunger100;
+      attemptNoise(happyTrill);
+    }
+  }
+
+  // soundtimer holds the time when last sound was played
+  // check to see if more than 3 seconds have passed (ticksPassed % 180)
+  // & last sound is different sound
+  // multiply by 1.0 for float stuff
+  // if so then play sound
+  function attemptNoise(noise) {
+    var ticksPassed = ticks - soundTimer;
+    if(1.0 * ticksPassed / 240 >= 1 && lastSound != noise){
+      noise.play();
+      soundTimer = ticks;
+      lastSound = noise;
     }
   }
 
@@ -462,14 +512,17 @@ THE ABOVE CODE IS REQUIRED FOR DEPLOYING TO INSTANT GAMES! -->
   function setLoveIcon(loveLevel) {
     if (loveLevel == 0){
       heart.texture = heart0;
-    } else if (loveLevel > 0 && loveLevel < 25){
+    } else if(loveLevel > 0 && loveLevel < 25){
+      attemptNoise(whineLove);
       heart.texture = heart25;
     } else if (loveLevel >= 25 && loveLevel < 50) {
       heart.texture = heart50;
     } else if (loveLevel >= 50 && loveLevel < 75){
       heart.texture = heart75;
-    } else if (loveLevel >= 75 && loveLevel <= 100){
+      attemptNoise(shortBwuk);
+    } else if(loveLevel >= 75 && loveLevel <= 100){
       heart.texture = heart100;
+      attemptNoise(cuteCaw);
     }
   }
 
