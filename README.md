@@ -19,6 +19,6 @@ Currently, Chrome doesn't render the images correctly....
 - (Chris) Mix down audio to lower bitrate. We need to reach <5MB total size
 - (Devin) Chicken needs to blink occasionally
 - (Open) Need some sort of guidelines/pop up text to help people keep the chicken alive. For example, if the chicken is starving early game, tell them to feed the chicken by clicking. Show warnings when the chicken is about to die.
-- (Open) Use sound effects.
+- (Kat) Use sound effects.
 - (Open) Exploding death from overeating. Heartbroken chicken death. Starving chicken death. (Chicken cannot die from too much love)
 - (Chris) Port the game over to Facebook platform
