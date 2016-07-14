@@ -1,2 +1,5 @@
 # Mac trash
 .DS_STORE
+
+# Because instant games requires you to zip the contents (not outer folder)
+*.zip
