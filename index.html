@@ -1,4 +1,7 @@
 <html>
+<head>
+  <link rel="stylesheet" type="text/css" href="assets/style.css" />
+</head>
 <body>
 <script src="pixi.js"></script>
 <script src="sound.js"></script>
@@ -152,16 +155,18 @@
   hunger.position.y = 0.37 * height;
   stage.addChild(hunger);
 
+  var food = getRandomFood();
+
   $(renderer.view).mousedown(function(e) {
     var x = e.offsetX;
     var y = e.offsetY;
-    var food = getRandomFood();
     food.scale.x = 0.12;
     food.scale.y = 0.12;
     food.position.x = x;
     food.position.y = y;
     foods.push(food);
     stage.addChild(food);
+    food = getRandomFood();
   });
 
   // start animating
