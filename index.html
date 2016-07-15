@@ -39,7 +39,7 @@
    }
 
    FB.getLoginStatus(function(response) {
-     // Check login status on load, and if the user is
+     // Check login status on load, and if the user isw
      // already logged in, go directly to the welcome message.
      if (response.status == 'connected') {
        onLogin(response);
@@ -484,6 +484,11 @@ THE ABOVE CODE IS REQUIRED FOR DEPLOYING TO INSTANT GAMES! -->
   var food_onigiri = PIXI.Texture.fromImage('assets/img/food/onigiri.png')
   var food_pringle = PIXI.Texture.fromImage('assets/img/food/pringle.png')
 
+  var asteroidTexture = PIXI.Texture.fromImage('assets/img/asteroid.png');
+
+  // used to remove asteroid
+  var isAsteroid = false;
+  var currentAsteroid;
 
   // Create background and renderer for image
   var renderer = PIXI.autoDetectRenderer(width, height,{backgroundColor : 0x81D4FA});
@@ -584,6 +589,7 @@ THE ABOVE CODE IS REQUIRED FOR DEPLOYING TO INSTANT GAMES! -->
 
   // create a texture from an image path
   var foods = []; // Keeps track of all food on screen
+  var asteroids = []; // keep track of all asteroids on screen
   var chicken = new Chicken()
   chicken.addToStage(stage);
   var numFoodEaten = 0;
@@ -633,18 +639,21 @@ THE ABOVE CODE IS REQUIRED FOR DEPLOYING TO INSTANT GAMES! -->
 
   var previous_drop = 0;
   $(renderer.view).mousedown(function(e) {
-    // don't let people spam foods or drop them on the chicken
-    var x = e.offsetX;
-    var y = e.offsetY;
-    if (!(y < height * 0.25 && ticks - previous_drop > time_between_foods)) {
-      return;
+    if(!isAsteroid) {
+      // don't let people spam foods or drop them on the chicken
+      var x = e.offsetX;
+      var y = e.offsetY;
+      if (!(y < height * 0.25 && ticks - previous_drop > time_between_foods)) {
+        return;
+      }
+      food.position.x = x;
+      food.position.y = y;
+      foods.push(food); // Keep track of this food
+      stage.addChild(food);
+      food = getRandomFood();
+      previous_drop = ticks;
     }
-    food.position.x = x;
-    food.position.y = y;
-    foods.push(food); // Keep track of this food
-    stage.addChild(food);
-    food = getRandomFood();
-    previous_drop = ticks;
+    isAsteroid = false;
   });
 
   var textSignSettings = {font : '20px Arvo', fill : 0x000000, align : 'center'};
@@ -673,6 +682,10 @@ THE ABOVE CODE IS REQUIRED FOR DEPLOYING TO INSTANT GAMES! -->
       runOnceASecond();
     }
 
+    if(ticks % 180 == 0){
+      runEveryThreeSeconds();
+    }
+
     if (tutorialSign2.visible && totalLoveGiven > 100) {
       tutorialSign2.visible = false;
       displayPermMsg();
@@ -683,6 +696,7 @@ THE ABOVE CODE IS REQUIRED FOR DEPLOYING TO INSTANT GAMES! -->
     chicken.updateSprites(ticks);
     requestAnimationFrame(animate);
     updateFoodMovementPositions();
+    updateAsteroidsMovement();
     checkTimeElapsed(hungerSeconds, loveSeconds);
     text.text = numFoodEaten;
     // render the container
@@ -691,7 +705,10 @@ THE ABOVE CODE IS REQUIRED FOR DEPLOYING TO INSTANT GAMES! -->
 
   // This function runs once a second
   function runOnceASecond() {
-    // Put your every-second job in here.
+  }
+
+  function runEveryThreeSeconds() {
+    makeItRain(1);
   }
 
   function checkTimeElapsed(hungerSeconds, loveSeconds) {
@@ -901,6 +918,52 @@ THE ABOVE CODE IS REQUIRED FOR DEPLOYING TO INSTANT GAMES! -->
     onigiri.scale.x = .1;
     onigiri.scale.y = .1;
     return onigiri;
+  }
+
+  // ayy lmao asteroids
+  // adds numAsteroids to the screen
+  function makeItRain(numAsteroids) {
+    var positionX = Math.random();
+    while(positionX <= .25 || positionX >= .75){
+      positionX = Math.random();
+    }
+    var asteroid = new PIXI.Sprite(asteroidTexture);
+    asteroid.scale.x = .08;
+    asteroid.scale.y = .08;
+    asteroid.rotation = -.6;
+    asteroid.position.x = positionX * width;
+    asteroid.position.y = .01 * height;
+    asteroid.interactive = true;
+    asteroid.on('click', onAsteroidClick);
+    asteroids.push(asteroid);
+    stage.addChild(asteroid);
+  }
+
+  // called every tick, updates asteroid position
+  function updateAsteroidsMovement() {
+    for (var i = 0; i < asteroids.length; i++) {
+      asteroids[i].position.y += 1.5;
+      if (asteroids[i].position.y > height) {
+        removeAsteroid(asteroids[i]);
+      }
+      if(checkCollision(chicken, asteroids[i])){
+        removeAsteroid(asteroids[i]);
+        chicken.isAlive = false;
+      }
+    }
+  }
+
+  // function that is called whenever asteroid is clicked
+  var onAsteroidClick = function () {
+    isAsteroid = true;
+    removeAsteroid(this);
+  };
+
+  // removes asteroid from stage and from asteroids array
+  function removeAsteroid(asteroid) {
+    stage.removeChild(asteroid);
+    i = asteroids.indexOf(asteroid);
+    asteroids.splice(i, 1);
   }
 
   // call FBInstant.loading.complete() when the game is ready to be played
