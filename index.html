@@ -91,7 +91,6 @@ THE ABOVE CODE IS REQUIRED FOR DEPLOYING TO INSTANT GAMES! -->
       // set the interaction data to null
       this.data = null;
       chicken.rubbing = false;
-      console.log(chicken.chickenLove);
     }
 
     // on drag, check to see if mouse is still colliding w/ chicken
@@ -99,7 +98,6 @@ THE ABOVE CODE IS REQUIRED FOR DEPLOYING TO INSTANT GAMES! -->
       if (this.dragging) {
         var mousePosition = this.data.getLocalPosition(this.parent);
         if(checkMouseCollision(mousePosition, chicken.bodySprite) || checkMouseCollision(mousePosition, chicken.eyeSprite)) {
-          console.log("petpetpet");
           chicken.increaseChickenLove();
         }
       }
@@ -224,9 +222,8 @@ THE ABOVE CODE IS REQUIRED FOR DEPLOYING TO INSTANT GAMES! -->
       }
     }
 
-    this.decreaseChickenLove = function() {
-      this.loveTimeElapsed = 0;
-      this.chickenLove += -5;
+    this.changeChickenLove = function(amt) {
+      this.chickenLove += amt;
     }
     this.bodySprite = new PIXI.Sprite(chickenMouthClosedTexture);
     this.bodySprite.anchor.x = 0.0;
@@ -419,11 +416,15 @@ THE ABOVE CODE IS REQUIRED FOR DEPLOYING TO INSTANT GAMES! -->
   var ticks = 0;
   var hungerSeconds = 0;
   var loveSeconds = 0;
-  var time_between_foods = 45;
+  var time_between_foods = 10;
+  var init_decay_rate = 1/60; // amount hunger decays per tick
+  var decay_rate = init_decay_rate; // every second decay rate increases by this much
+  var decay_growth_rate = 1/240;
   var hungerWarnLevel = 30;
   var loveWarnLevel = 25;
   var totalLoveGiven = 0;
   var foodTutorialDone = false;
+  var gameStarted = false;
   var stage = new PIXI.Container();
 
   // Initialize textures
@@ -635,6 +636,9 @@ THE ABOVE CODE IS REQUIRED FOR DEPLOYING TO INSTANT GAMES! -->
   var previous_drop = 0;
   $(renderer.view).mousedown(function(e) {
     // don't let people spam foods or drop them on the chicken
+    if (chicken.isAlive) {
+      gameStarted = true;
+    }
     var x = e.offsetX;
     var y = e.offsetY;
     if (!(y < height * 0.25 && ticks - previous_drop > time_between_foods)) {
@@ -670,8 +674,11 @@ THE ABOVE CODE IS REQUIRED FOR DEPLOYING TO INSTANT GAMES! -->
   animate();
   function animate() {
     ++ticks;
-    if (ticks % 60 == 0) {
+    if (gameStarted && ticks % 60 == 0) {
+      console.log("weight: " + chicken.chickenWeight + ", love: " + chicken.chickenLove)
       runOnceASecond();
+      decay_rate += decay_growth_rate;
+      level++;
     }
 
     if (tutorialSign2.visible && totalLoveGiven > 75) {
@@ -683,11 +690,13 @@ THE ABOVE CODE IS REQUIRED FOR DEPLOYING TO INSTANT GAMES! -->
       hungerSeconds = ++chicken.hungerTimeElapsed/60;
       loveSeconds = ++chicken.loveTimeElapsed/60;
       chicken.updateSprites(ticks);
+    } else {
+      gameStarted = false;
     }
     requestAnimationFrame(animate);
     updateFoodMovementPositions();
-    checkTimeElapsed(hungerSeconds, loveSeconds);
-    text.text = numFoodEaten;
+    updateHungerLove();
+    text.text = level;
     // render the container
     renderer.render(stage);
   }
@@ -697,18 +706,25 @@ THE ABOVE CODE IS REQUIRED FOR DEPLOYING TO INSTANT GAMES! -->
     // Put your every-second job in here.
   }
 
-  function checkTimeElapsed(hungerSeconds, loveSeconds) {
-    // if no action has been taken on hunger, make chicken skinnier
-    if (hungerSeconds > 2.5) {
-      chicken.updateChickenWeight(-5);
-      setHungerLevel(chicken.chickenWeight);
-    }
-    if (loveSeconds > 2.5){
-      chicken.decreaseChickenLove();
-      setLoveIcon(chicken.chickenLove);
-    }
-    // if no action has been taken on love, update the chicken love
+  function updateHungerLove() {
+    chicken.updateChickenWeight(-decay_rate);
+    setHungerLevel(chicken.chickenWeight);
+    chicken.changeChickenLove(-decay_rate);
+    setLoveIcon(chicken.chickenLove);
   }
+
+  // function checkTimeElapsed(hungerSeconds, loveSeconds) {
+  //   // if no action has been taken on hunger, make chicken skinnier
+  //   if (hungerSeconds > 2.5) {
+  //     chicken.updateChickenWeight(-decay_rate);
+  //     setHungerLevel(chicken.chickenWeight);
+  //   }
+  //   if (loveSeconds > 2.5){
+  //     chicken.decreaseChickenLove();
+  //     setLoveIcon(chicken.chickenLove);
+  //   }
+  //   // if no action has been taken on love, update the chicken love
+  // }
 
   function displayPermMsg() {
     if (!permanentMsg.visible && !tutorialSign1.visible && !tutorialSign2.visible) {
