@@ -3,9 +3,9 @@ The next new cloud-computing based machine-learning innovative solution to the w
 
 ## Links
 
-fburl.com/chiken
+www.fburl.com/chiken
 
-apps.facebook.com/hungryhungrychiken
+www.apps.facebook.com/hungryhungrychiken
 
 ## USE SAFARI TO TEST LOCALLY!
 Currently, Chrome doesn't render the images correctly....
