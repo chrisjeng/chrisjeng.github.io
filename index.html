@@ -7,7 +7,6 @@
 <script src="https://www.facebook.com/assets.php/en_US/fbinstant.js"></script>
 
 <!-- Setup the fb canvas SDK for JS -->
-<!-- THE BELOW CODE IS REQUIRED FOR DEPLOYING ON INSTANT GAMES!
 <script>
   window.fbAsyncInit = function() {
     FB.init({
@@ -51,8 +50,6 @@
      }
    });
 </script>
-
-THE ABOVE CODE IS REQUIRED FOR DEPLOYING TO INSTANT GAMES! -->
 
 <!-- Greet the user -->
 <h1 id="fb-welcome"></h1>
@@ -313,7 +310,7 @@ THE ABOVE CODE IS REQUIRED FOR DEPLOYING TO INSTANT GAMES! -->
     }
 
     this.handleMood = function() {
-      if (this.chickenWeight <= hungerWarnLevel || this.chickenLove <= loveWarnLevel) {
+      if (this.chickenWeight <= HUNGERWARNLEVEL || this.chickenLove <= LOVEWARNLEVEL) {
         this.mood = "sad";
       } else if (this.rubbing) {
         this.mood = "happy";
@@ -408,21 +405,40 @@ THE ABOVE CODE IS REQUIRED FOR DEPLOYING TO INSTANT GAMES! -->
 
   }
 
-  var level = 0;
+  // Set once and for all
   var width = 640;
   var height = 480;
-  var ticks = 0;
-  var hungerSeconds = 0;
-  var loveSeconds = 0;
-  var time_between_foods = 10;
-  var init_decay_rate = 1/60; // amount hunger decays per tick
-  var decay_rate = init_decay_rate; // every second decay rate increases by this much
-  var decay_growth_rate = 1/480;
-  var hungerWarnLevel = 30;
-  var loveWarnLevel = 25;
-  var totalLoveGiven = 0;
-  var foodTutorialDone = false;
-  var gameStarted = false;
+  var TIME_BETWEEN_FOODS = 10;
+  var INIT_DECAY_RATE = 1/60; // amount hunger decays per tick
+  var DECAY_GROWTH_RATE = 1/480;
+  var HUNGERWARNLEVEL = 30;
+  var LOVEWARNLEVEL = 25;
+
+  // These things vary
+  var level;
+  var ticks;
+  var hungerSeconds;
+  var loveSeconds;
+  var decay_rate;
+  var totalLoveGiven;
+  var foodTutorialDone;
+  var gameStarted;
+  var previous_drop;
+
+  function initVars() {
+    level = 0;
+    ticks = 0;
+    hungerSeconds = 0;
+    loveSeconds = 0;
+    decay_rate = INIT_DECAY_RATE; // every second decay rate increases by this much
+    totalLoveGiven = 0;
+    foodTutorialDone = false;
+    gameStarted = false;
+    previous_drop = 0;
+  }
+
+  initVars();
+
   var stage = new PIXI.Container();
 
   // Initialize textures
@@ -638,28 +654,42 @@ THE ABOVE CODE IS REQUIRED FOR DEPLOYING TO INSTANT GAMES! -->
   var food = getRandomFood();
 
   var click_height = chicken.bodySprite.y;
-  var previous_drop = 0;
+
+  function restart() {
+    initVars();
+    text.text = level;
+    chicken.isAlive = true;
+    console.log("Restart!");
+  }
+
   $(renderer.view).mousedown(function(e) {
-    if (!chicken.isAlive) {
+
+    // Handle restarting game logic
+    if (!gameStarted && !chicken.isAlive) {
+      // Restart the game
+      restart();
       return;
     }
-    // don't let people spam foods or drop them on the chicken
+    if (!chicken.isAlive) {
+      console.log("Chiken ded! No click action");
+      return;
+    }
     if (chicken.isAlive) {
       gameStarted = true;
     }
-    if(!isAsteroid){
-      var x = e.offsetX;
-      var y = e.offsetY;
-      if (!(y < click_height && ticks - previous_drop > time_between_foods)) {
-        return;
-      }
-      food.position.x = x;
-      food.position.y = y;
-      foods.push(food); // Keep track of this food
-      stage.addChild(food);
-      food = getRandomFood();
-      previous_drop = ticks;
+    // don't let people spam foods or drop them on the chicken
+    var x = e.offsetX;
+    var y = e.offsetY;
+    if (!(y < click_height && ticks - previous_drop > TIME_BETWEEN_FOODS)) {
+      console.log("Too frequent click")
+      return;
     }
+    food.position.x = x;
+    food.position.y = y;
+    foods.push(food); // Keep track of this food
+    stage.addChild(food);
+    food = getRandomFood();
+    previous_drop = ticks;
     isAsteroid = false;
   });
 
@@ -688,8 +718,9 @@ THE ABOVE CODE IS REQUIRED FOR DEPLOYING TO INSTANT GAMES! -->
     if (gameStarted && ticks % 60 == 0) {
       console.log("weight: " + chicken.chickenWeight + ", love: " + chicken.chickenLove)
       runOnceASecond();
-      decay_rate += decay_growth_rate;
+      decay_rate += DECAY_GROWTH_RATE;
       level++;
+      FBInstant.game.setScore(level);
     }
 
     if(ticks % 180 == 0){
@@ -984,7 +1015,7 @@ THE ABOVE CODE IS REQUIRED FOR DEPLOYING TO INSTANT GAMES! -->
   var onAsteroidClick = function () {
     isAsteroid = true;
     removeAsteroid(this);
-    // gameOver();
+    gameOver();
   };
 
   // removes asteroid from stage and from asteroids array
