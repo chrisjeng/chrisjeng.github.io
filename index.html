@@ -582,8 +582,8 @@ THE ABOVE CODE IS REQUIRED FOR DEPLOYING TO INSTANT GAMES! -->
   var chicken = new Chicken()
   stage.addChild(chicken.bodySprite);
   stage.addChild(chicken.eyeSprite);
-  var score = 0;
-  var text = new PIXI.Text(score, {font : '36px Arvo', fill : 0x000000, align : 'center'});
+  var numFoodEaten = 0;
+  var text = new PIXI.Text(numFoodEaten, {font : '36px Arvo', fill : 0x000000, align : 'center'});
   var scoreBorderWidth = 10;
   text.position.x = scoreBorderWidth;
   text.position.y = scoreBorderWidth;
@@ -643,6 +643,13 @@ THE ABOVE CODE IS REQUIRED FOR DEPLOYING TO INSTANT GAMES! -->
     previous_drop = ticks;
   });
 
+  var tutorialState = 0;
+  var tutorialSign1 = new PIXI.Text(numFoodEaten, {font : '20px Arvo', fill : 0x000000, border: 0x888888, align : 'center', background: "green"});
+  tutorialSign1.text = "Click the air to \ndrop yummy food!\n\nRub its tummy to \ngive love!";
+  tutorialSign1.position.x = width * 0.75;
+  tutorialSign1.position.y = height * 0.45;
+  stage.addChild(tutorialSign1);
+
   // start animating
   animate();
   function animate() {
@@ -651,13 +658,15 @@ THE ABOVE CODE IS REQUIRED FOR DEPLOYING TO INSTANT GAMES! -->
       runOnceASecond();
     }
 
+    // Remove the tutorial text after 3 foods have been eaten
+
     hungerSeconds = ++chicken.hungerTimeElapsed/60;
     loveSeconds = ++chicken.loveTimeElapsed/60;
     chicken.updateSprites(ticks);
     requestAnimationFrame(animate);
     updateFoodMovementPositions();
     checkTimeElapsed(hungerSeconds, loveSeconds);
-    text.text = score;
+    text.text = numFoodEaten;
     // render the container
     renderer.render(stage);
   }
@@ -697,7 +706,7 @@ THE ABOVE CODE IS REQUIRED FOR DEPLOYING TO INSTANT GAMES! -->
           chicken.foodCount = 0;
           seconds = 0;
         }
-        score++;
+        numFoodEaten++;
       }
     }
   }
