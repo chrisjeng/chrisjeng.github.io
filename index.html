@@ -455,7 +455,8 @@ THE ABOVE CODE IS REQUIRED FOR DEPLOYING TO INSTANT GAMES! -->
   var chickenMouthOpenTexture100 = PIXI.Texture.fromImage('assets/img/chicken_weight/chickenfat100beak.png');
 
   // init heart/hunger textures
-  var heart0 = PIXI.Texture.fromImage('assets/img/heart/heart0.png');
+  // TEMPORARY COMMENT OUT: NEED TO USE RIP SYMBOL
+  // var heart0 = PIXI.Texture.fromImage('assets/img/heart/heart0.png');
   var heart10 = PIXI.Texture.fromImage('assets/img/heart/heart10.png');
   var heart20 = PIXI.Texture.fromImage('assets/img/heart/heart20.png');
   var heart30 = PIXI.Texture.fromImage('assets/img/heart/heart30.png');
@@ -828,7 +829,8 @@ THE ABOVE CODE IS REQUIRED FOR DEPLOYING TO INSTANT GAMES! -->
   // replaces the love icon with the appropriate icon
   function setLoveIcon(loveLevel) {
     if (loveLevel == 0){
-      heart.texture = heart0;
+      // TEMPORARY TODO KAT USE RIP SYMBOL
+      heart.texture = heart10;
     } else if (loveLevel > 0 && loveLevel < 10){
       attemptNoise(whineLove);
       heart.texture = heart10;
