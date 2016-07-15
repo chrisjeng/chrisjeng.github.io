@@ -209,12 +209,15 @@ THE ABOVE CODE IS REQUIRED FOR DEPLOYING TO INSTANT GAMES! -->
     this.increaseChickenLove = function() {
       if (this.chickenLove > 0 && this.chickenLove <= 30){
         this.chickenLove += .75;
+        totalLoveGiven += .75;
       }
       else if (this.chickenLove > 30 && this.chickenLove <= 50){
         this.chickenLove += .5;
+        totalLoveGiven += .5;
       }
       else if (this.chickenLove > 50){
         this.chickenLove += .25;
+        totalLoveGiven += .25;
       }
       if (this.chickenLove > 100){
         this.chickenLove = 100;
@@ -419,6 +422,7 @@ THE ABOVE CODE IS REQUIRED FOR DEPLOYING TO INSTANT GAMES! -->
   var time_between_foods = 45;
   var hungerWarnLevel = 25;
   var loveWarnLevel = 25;
+  var totalLoveGiven = 0;
   var foodTutorialDone = false;
   var stage = new PIXI.Container();
 
@@ -631,12 +635,23 @@ THE ABOVE CODE IS REQUIRED FOR DEPLOYING TO INSTANT GAMES! -->
     previous_drop = ticks;
   });
 
-  var tutorialState = 0;
-  var tutorialSign1 = new PIXI.Text(numFoodEaten, {font : '20px Arvo', fill : 0x000000, border: 0x888888, align : 'center', background: "green"});
-  tutorialSign1.text = "Click the air to \ndrop yummy food!\n\nRub its tummy to \ngive love!";
+  var textSignSettings = {font : '20px Arvo', fill : 0x000000, align : 'center'};
+  var tutorialSignText1 = "Click the air to \ndrop yummy food!";
+  var tutorialSignText2 = "Rub its tummy to \ngive love!";
+  var permanentMsgText = "Keep your chick fed, \nloved, and happy :)";
+  var tutorialSign1 = new PIXI.Text(tutorialSignText1, textSignSettings);
+  var tutorialSign2 = new PIXI.Text(tutorialSignText2, textSignSettings);
+  var permanentMsg = new PIXI.Text(permanentMsgText, textSignSettings);
+  permanentMsg.visible = false;
   tutorialSign1.position.x = width * 0.75;
   tutorialSign1.position.y = height * 0.45;
+  tutorialSign2.position.x = width * 0.75;
+  tutorialSign2.position.y = height * 0.60;
+  permanentMsg.position.x = width * 0.15;
+  permanentMsg.position.y = height * 0.2;
   stage.addChild(tutorialSign1);
+  stage.addChild(tutorialSign2);
+  stage.addChild(permanentMsg);
 
   // start animating
   animate();
@@ -646,9 +661,9 @@ THE ABOVE CODE IS REQUIRED FOR DEPLOYING TO INSTANT GAMES! -->
       runOnceASecond();
     }
 
-    // Remove the tutorial text after 3 foods have been eaten
-    if (tutorialSign1.visible && numFoodEaten >= 3) {
-      tutorialSign1.visible = false;
+    if (tutorialSign2.visible && totalLoveGiven > 100) {
+      tutorialSign2.visible = false;
+      displayPermMsg();
     }
 
     hungerSeconds = ++chicken.hungerTimeElapsed/60;
@@ -680,6 +695,12 @@ THE ABOVE CODE IS REQUIRED FOR DEPLOYING TO INSTANT GAMES! -->
     // if no action has been taken on love, update the chicken love
   }
 
+  function displayPermMsg() {
+    if (!permanentMsg.visible && !tutorialSign1.visible && !tutorialSign2.visible) {
+      permanentMsg.visible = true;
+    }
+  }
+
   function updateFoodMovementPositions() {
     chicken.food_nearby = false;
     for (var i = 0; i < foods.length; i++) {
@@ -698,6 +719,11 @@ THE ABOVE CODE IS REQUIRED FOR DEPLOYING TO INSTANT GAMES! -->
           seconds = 0;
         }
         numFoodEaten++;
+        // Remove the tutorial text after 3 foods have been eaten
+        if (tutorialSign1.visible && numFoodEaten >= 3) {
+          tutorialSign1.visible = false;
+          displayPermMsg();
+        }
       }
     }
   }
