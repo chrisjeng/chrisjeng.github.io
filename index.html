@@ -71,7 +71,7 @@ THE ABOVE CODE IS REQUIRED FOR DEPLOYING TO INSTANT GAMES! -->
     this.foodCount = 0;
     this.hungerTimeElapsed = 0;
     this.loveTimeElapsed = 0;
-    this.chickenWeight = 50;
+    this.chickenWeight = 55;
     this.chickenLove = 50;
     // stage 0 to 10: 0 is facing right, 5 is facing left, loops back to 0
     this.hopping_stage = 0;
@@ -107,9 +107,11 @@ THE ABOVE CODE IS REQUIRED FOR DEPLOYING TO INSTANT GAMES! -->
     this.food_nearby = false;
     this.handleFoodNearby = function() {
       if(this.food_nearby) {
-        this.bodySprite.texture = chickenMouthOpenTexture;
+        //TODO Resize chicken open
+        this.resizeChickenOpen(this.chickenWeight);
       } else {
-        this.bodySprite.texture = chickenMouthClosedTexture;
+        //TODO Resize chicken closed
+        this.resizeChickenClosed(this.chickenWeight);
       }
     }
     this.checkNearbyMouth = function(x, y) {
@@ -132,47 +134,97 @@ THE ABOVE CODE IS REQUIRED FOR DEPLOYING TO INSTANT GAMES! -->
              (mouth_y + mouth_height) < y);
       }
 
-    // resizes chicken based on hunger and love
+    // resizes chicken based on hunger for closed mouth
     // TODO Angel
-    this.resizeChicken = function(weight) {
-      switch(weight) {
-        case 0:
-          // dead
-          console.log(weight);
-          break;
-        case 10:
-          console.log(weight);
-          break;
-        case 20:
-          console.log(weight);
-          break;
-        case 30:
-          console.log(weight);
-          break;
-        case 40:
-          console.log(weight);
-          break;
-        case 50:
-          console.log(weight);
-          break;
-        case 60:
-          console.log(weight);
-          break;
-        case 70:
-          console.log(weight);
-          break;
-        case 80:
-          console.log(weight);
-          break;
-        case 90:
-          console.log(weight);
-          break;
-        case 100:
-          console.log(weight);
-          break;
-        default:
-          console.log(weight);
-          break;
+    this.resizeChickenClosed = function(weight) {
+      if (weight > 100) {
+        this.bodySprite.texture = chickenMouthOpenTexture100;
+        return;
+      }
+      if (weight > 90) {
+        this.bodySprite.texture = chickenMouthClosedTexture90;
+        return;
+      }
+      if (weight > 80) {
+        this.bodySprite.texture = chickenMouthClosedTexture80;
+        return;
+      }
+      if (weight > 70) {
+        this.bodySprite.texture = chickenMouthClosedTexture70;
+        return;
+      }
+      if (weight > 60) {
+        this.bodySprite.texture = chickenMouthClosedTexture60;
+        return;
+      }
+      if (weight > 50) {
+        this.bodySprite.texture = chickenMouthClosedTexture;
+        return;
+      }
+      if (weight > 40) {
+        return;
+      }
+      if (weight > 30) {
+        return;
+      }
+      if (weight > 20) {
+        return;
+      }
+      if (weight > 10) {
+        return;
+      }
+      if (weight > 0) {
+        return;
+      }
+      if (weight <= 0) {
+        return;
+      }
+    }
+
+    // resizes chicken based on hunger for open mouth
+    // TODO Angel
+    this.resizeChickenOpen = function(weight) {
+      if (weight > 100) {
+        this.bodySprite.texture = chickenMouthOpenTexture100;
+        return;
+      }
+      if (weight > 90) {
+        this.bodySprite.texture = chickenMouthOpenTexture90;
+        return;
+      }
+      if (weight > 80) {
+        this.bodySprite.texture = chickenMouthOpenTexture80;
+        return;
+      }
+      if (weight > 70) {
+        this.bodySprite.texture = chickenMouthOpenTexture70;
+        return;
+      }
+      if (weight > 60) {
+        this.bodySprite.texture = chickenMouthOpenTexture60;
+        return;
+      }
+      if (weight > 50) {
+        this.bodySprite.texture = chickenMouthOpenTexture;
+        return;
+      }
+      if (weight > 40) {
+        return;
+      }
+      if (weight > 30) {
+        return;
+      }
+      if (weight > 20) {
+        return;
+      }
+      if (weight > 10) {
+        return;
+      }
+      if (weight > 0) {
+        return;
+      }
+      if (weight <= 0) {
+        return;
       }
     }
 
@@ -182,7 +234,7 @@ THE ABOVE CODE IS REQUIRED FOR DEPLOYING TO INSTANT GAMES! -->
       if (this.chickenWeight > 100){
         this.chickenWeight = 100;
       }
-      this.resizeChicken(this.chickenWeight);
+      this.resizeChickenClosed(this.chickenWeight);
       this.hungerTimeElapsed = 0;
     }
 
@@ -394,6 +446,20 @@ THE ABOVE CODE IS REQUIRED FOR DEPLOYING TO INSTANT GAMES! -->
   var barnTexture = PIXI.Texture.fromImage('assets/img/background/barn.png');
   var cloudTexture = PIXI.Texture.fromImage('assets/img/background/cloud3.png');
   var picketTexture = PIXI.Texture.fromImage('assets/img/just_picket.png');
+
+  // chicken weight textures closed mouth
+  var chickenMouthClosedTexture60 = PIXI.Texture.fromImage('assets/img/chicken_weight/chickenfat60.jpg');
+  var chickenMouthClosedTexture70 = PIXI.Texture.fromImage('assets/img/chicken_weight/chickenfat70.jpg');
+  var chickenMouthClosedTexture80 = PIXI.Texture.fromImage('assets/img/chicken_weight/chickenfat80.jpg');
+  var chickenMouthClosedTexture90 = PIXI.Texture.fromImage('assets/img/chicken_weight/chickenfat90.jpg');
+  var chickenMouthClosedTexture100 = PIXI.Texture.fromImage('assets/img/chicken_weight/chickenfat100.jpg');
+
+  // chicken weight textures open mouth
+  var chickenMouthOpenTexture60 = PIXI.Texture.fromImage('assets/img/chicken_weight/chickenfat60beak.jpg');
+  var chickenMouthOpenTexture70 = PIXI.Texture.fromImage('assets/img/chicken_weight/chickenfat70beak.jpg');
+  var chickenMouthOpenTexture80 = PIXI.Texture.fromImage('assets/img/chicken_weight/chickenfat80beak.jpg');
+  var chickenMouthOpenTexture90 = PIXI.Texture.fromImage('assets/img/chicken_weight/chickenfat90beak.jpg');
+  var chickenMouthOpenTexture100 = PIXI.Texture.fromImage('assets/img/chicken_weight/chickenfat100beak.jpg');
 
   // init heart/hunger textures
   var heart0 = PIXI.Texture.fromImage('assets/img/heart/heart0.png');
