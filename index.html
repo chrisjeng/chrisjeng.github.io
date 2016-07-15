@@ -379,6 +379,7 @@ THE ABOVE CODE IS REQUIRED FOR DEPLOYING TO INSTANT GAMES! -->
   var time_between_foods = 45;
   var hungerWarnLevel = 25;
   var loveWarnLevel = 25;
+  var foodTutorialDone = false;
   var stage = new PIXI.Container();
 
   // Initialize textures
@@ -392,6 +393,7 @@ THE ABOVE CODE IS REQUIRED FOR DEPLOYING TO INSTANT GAMES! -->
   var foodTexture = PIXI.Texture.fromImage('assets/img/food/fries.png');
   var barnTexture = PIXI.Texture.fromImage('assets/img/background/barn.png');
   var cloudTexture = PIXI.Texture.fromImage('assets/img/background/cloud3.png');
+  var picketTexture = PIXI.Texture.fromImage('assets/img/just_picket.png');
 
   // init heart/hunger textures
   var heart0 = PIXI.Texture.fromImage('assets/img/heart/heart0.png');
@@ -410,6 +412,7 @@ THE ABOVE CODE IS REQUIRED FOR DEPLOYING TO INSTANT GAMES! -->
   var food_hotdog = PIXI.Texture.fromImage('assets/img/food/hotdog.png')
   var food_onigiri = PIXI.Texture.fromImage('assets/img/food/onigiri.png')
   var food_pringle = PIXI.Texture.fromImage('assets/img/food/pringle.png')
+
 
   // Create background and renderer for image
   var renderer = PIXI.autoDetectRenderer(width, height,{backgroundColor : 0x81D4FA});
@@ -452,6 +455,13 @@ THE ABOVE CODE IS REQUIRED FOR DEPLOYING TO INSTANT GAMES! -->
   cloud3.position.x = width * 0.6;
   cloud3.position.y = height * 0.09;
   stage.addChild(cloud3);
+
+  // display tutorial pickets
+  var picket = new PIXI.Sprite(picketTexture);
+  picket.scale.set(0.12, 0.12);
+  picket.position.x = width * 0.55;
+  picket.position.y = height * 0.03;
+  stage.addChild(picket);
 
   // Load the sounds
   sounds.load([
@@ -522,9 +532,14 @@ THE ABOVE CODE IS REQUIRED FOR DEPLOYING TO INSTANT GAMES! -->
   heart.width = 90;
   heart.anchor.x = 0.5;
   heart.anchor.y = 0.5;
-  heart.position.x = 0.87 * width;
-  heart.position.y = 0.15 * height;
+  heart.position.x = 0.85 * width;
+  heart.position.y = 0.2 * height;
   stage.addChild(heart);
+
+  var loveText = new PIXI.Text("Love", {font : '25px Arvo', fill : 0x000000, align : 'center'});
+  loveText.position.x = 0.81 * width;
+  loveText.position.y = 0.3 * height;
+  stage.addChild(loveText);
 
   // display the hunger logo at 100%
   var hungerTexture = hunger100;
@@ -535,9 +550,14 @@ THE ABOVE CODE IS REQUIRED FOR DEPLOYING TO INSTANT GAMES! -->
   hunger.width = 90;
   hunger.anchor.x = 0.5;
   hunger.anchor.y = 0.5;
-  hunger.position.x = 0.87 * width;
-  hunger.position.y = 0.37 * height;
+  hunger.position.x = 0.68 * width;
+  hunger.position.y = 0.2 * height;
   stage.addChild(hunger);
+
+  var hungerText = new PIXI.Text("Hunger", {font : '25px Arvo', fill : 0x000000, align : 'center'});
+  hungerText.position.x = 0.63 * width;
+  hungerText.position.y = 0.3 * height;
+  stage.addChild(hungerText);
 
   var food = getRandomFood();
 
