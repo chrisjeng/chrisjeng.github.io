@@ -776,16 +776,11 @@
       }
     }
     requestAnimationFrame(animate);
-    updateFoodMovementPositions();
-    if(heartShown){
-      updateHeartsPosition();
-    }
-    // checkTimeElapsed(hungerSeconds, loveSeconds);
-    updateHungerLove();
-    text.text = level;
     if (chicken.isAlive) {
+      if(heartShown){
+        updateHeartsPosition();
+      }
       updateFoodMovementPositions();
-      // checkTimeElapsed(hungerSeconds, loveSeconds);
       updateHungerLove();
       text.text = level;
     }
