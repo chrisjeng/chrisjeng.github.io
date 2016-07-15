@@ -723,7 +723,7 @@
   animate();
   function animate() {
     ++ticks;
-    if (gameStarted && ticks % 60 == 0) {
+    if (ticks % 60 == 0) {
       console.log("weight: " + chicken.chickenWeight + ", love: " + chicken.chickenLove)
       runOnceASecond();
       decay_rate += DECAY_GROWTH_RATE;
