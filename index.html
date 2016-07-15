@@ -139,7 +139,7 @@ THE ABOVE CODE IS REQUIRED FOR DEPLOYING TO INSTANT GAMES! -->
     // TODO Angel
     this.resizeChickenClosed = function(weight) {
       if (weight > 100) {
-        this.bodySprite.texture = chickenMouthOpenTexture100;
+        this.bodySprite.texture = chickenMouthClosedTexture100;
         return;
       }
       if (weight > 90) {
@@ -198,8 +198,8 @@ THE ABOVE CODE IS REQUIRED FOR DEPLOYING TO INSTANT GAMES! -->
     // updates chicken weight with the given value! aka feed chicken
     this.updateChickenWeight = function(foodValue) {
       this.chickenWeight += foodValue;
-      if (this.chickenWeight > 100){
-        this.chickenWeight = 100;
+      if (this.chickenWeight > 120){
+        this.chickenWeight = 120;
       }
       this.resizeChickenClosed(this.chickenWeight);
       this.hungerTimeElapsed = 0;
@@ -256,7 +256,7 @@ THE ABOVE CODE IS REQUIRED FOR DEPLOYING TO INSTANT GAMES! -->
       "eye_half": {x: 0.48, y: 0.48},
       "eye_happy": {x: 0.46, y: 0.48},
       "eye_sad": {x: 0.46, y: 0.42},
-      "eye_dead": {x: 0.46, y:0.42}
+      "eye_dead": {x: 0.49, y:0.42}
     };
     this.updateEyeLocation = function() {
       var eye_x = this.eye_positions[this.eye]['x'];
@@ -679,9 +679,11 @@ THE ABOVE CODE IS REQUIRED FOR DEPLOYING TO INSTANT GAMES! -->
       displayPermMsg();
     }
 
-    hungerSeconds = ++chicken.hungerTimeElapsed/60;
-    loveSeconds = ++chicken.loveTimeElapsed/60;
-    chicken.updateSprites(ticks);
+    if (chicken.isAlive) {
+      hungerSeconds = ++chicken.hungerTimeElapsed/60;
+      loveSeconds = ++chicken.loveTimeElapsed/60;
+      chicken.updateSprites(ticks);
+    }
     requestAnimationFrame(animate);
     updateFoodMovementPositions();
     checkTimeElapsed(hungerSeconds, loveSeconds);
@@ -722,7 +724,7 @@ THE ABOVE CODE IS REQUIRED FOR DEPLOYING TO INSTANT GAMES! -->
       if (foods[i].position.y > height) {
         removeFood(foods[i]);
       }
-      else if (chicken.checkCollision(foods[i].position.x, foods[i].position.y, foods[i].width, foods[i].height)) {
+      else if (chicken.isAlive && chicken.checkCollision(foods[i].position.x, foods[i].position.y, foods[i].width, foods[i].height)) {
         removeFood(foods[i]);
         bite.play();
         if (++chicken.foodCount == 2) {
