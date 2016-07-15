@@ -593,7 +593,7 @@ THE ABOVE CODE IS REQUIRED FOR DEPLOYING TO INSTANT GAMES! -->
   var chicken = new Chicken()
   chicken.addToStage(stage);
   var numFoodEaten = 0;
-  var text = new PIXI.Text(numFoodEaten, {font : '36px Arvo', fill : 0x000000, align : 'center'});
+  var text = new PIXI.Text(text, {font : '36px Arvo', fill : 0x000000, align : 'center'});
   var scoreBorderWidth = 10;
   text.position.x = scoreBorderWidth;
   text.position.y = scoreBorderWidth;
@@ -984,6 +984,11 @@ THE ABOVE CODE IS REQUIRED FOR DEPLOYING TO INSTANT GAMES! -->
     stage.removeChild(asteroid);
     i = asteroids.indexOf(asteroid);
     asteroids.splice(i, 1);
+  }
+
+  // Call this function
+  function gameOver() {
+    console.log("Game over!");
   }
 
   // call FBInstant.loading.complete() when the game is ready to be played
