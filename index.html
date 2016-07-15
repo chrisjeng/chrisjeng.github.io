@@ -100,6 +100,19 @@ THE ABOVE CODE IS REQUIRED FOR DEPLOYING TO INSTANT GAMES! -->
         if(checkMouseCollision(mousePosition, chicken.bodySprite) || checkMouseCollision(mousePosition, chicken.eyeSprite)) {
           chicken.increaseChickenLove();
         }
+
+        if(!heartShown)
+        {
+          heartsSprite = new PIXI.Sprite(chickenLoveTexture);
+          heartsSprite.scale.x = .1;
+          heartsSprite.scale.y = .1;
+          heartsSprite.anchor.x = 0.5;
+          heartsSprite.anchor.y = 0.5;
+          heartsSprite.position.x = chicken.bodySprite.x;
+          heartsSprite.position.y = height * .5;
+          heartShown = true;
+          stage.addChild(heartsSprite);
+        }
       }
     }
 
@@ -423,6 +436,7 @@ THE ABOVE CODE IS REQUIRED FOR DEPLOYING TO INSTANT GAMES! -->
   var totalLoveGiven = 0;
   var foodTutorialDone = false;
   var gameStarted = false;
+  var rotateValue = .005;
   var stage = new PIXI.Container();
 
   // Initialize textures
@@ -485,10 +499,13 @@ THE ABOVE CODE IS REQUIRED FOR DEPLOYING TO INSTANT GAMES! -->
   var food_pringle = PIXI.Texture.fromImage('assets/img/food/pringle.png')
 
   var asteroidTexture = PIXI.Texture.fromImage('assets/img/asteroid.png');
+  var chickenLoveTexture = PIXI.Texture.fromImage('assets/img/heart/chickenLove.png');
 
   // used to remove asteroid
   var isAsteroid = false;
   var currentAsteroid;
+  var heartsSprite;
+  var heartShown = false;
 
   // Create background and renderer for image
   var renderer = PIXI.autoDetectRenderer(width, height,{backgroundColor : 0x81D4FA});
@@ -689,9 +706,9 @@ THE ABOVE CODE IS REQUIRED FOR DEPLOYING TO INSTANT GAMES! -->
       level++;
     }
 
-    if(ticks % 180 == 0){
-      runEveryThreeSeconds();
-    }
+    // if(ticks % 180 == 0){
+    //   runEveryThreeSeconds();
+    // }
 
     if (tutorialSign2.visible && totalLoveGiven > 75) {
       tutorialSign2.visible = false;
@@ -708,6 +725,9 @@ THE ABOVE CODE IS REQUIRED FOR DEPLOYING TO INSTANT GAMES! -->
     requestAnimationFrame(animate);
     updateFoodMovementPositions();
     updateAsteroidsMovement();
+    if(heartShown){
+      updateHeartsPosition();
+    }
     // checkTimeElapsed(hungerSeconds, loveSeconds);
     updateHungerLove();
     text.text = level;
@@ -719,9 +739,11 @@ THE ABOVE CODE IS REQUIRED FOR DEPLOYING TO INSTANT GAMES! -->
   function runOnceASecond() {
   }
 
-  function runEveryThreeSeconds() {
-    makeItRain(1);
-  }
+  // function runEveryThreeSeconds() {
+  //   if(level > 1) {
+  //     makeItRain(1);
+  //   }
+  // }
 
   function updateHungerLove() {
     chicken.updateChickenWeight(-decay_rate);
@@ -948,9 +970,9 @@ THE ABOVE CODE IS REQUIRED FOR DEPLOYING TO INSTANT GAMES! -->
       positionX = Math.random();
     }
     var asteroid = new PIXI.Sprite(asteroidTexture);
-    asteroid.scale.x = .08;
-    asteroid.scale.y = .08;
-    asteroid.rotation = -.6;
+    asteroid.scale.x = .05;
+    asteroid.scale.y = .05;
+    asteroid.rotation = -.5;
     asteroid.position.x = positionX * width;
     asteroid.position.y = .01 * height;
     asteroid.interactive = true;
@@ -963,6 +985,7 @@ THE ABOVE CODE IS REQUIRED FOR DEPLOYING TO INSTANT GAMES! -->
   function updateAsteroidsMovement() {
     for (var i = 0; i < asteroids.length; i++) {
       asteroids[i].position.y += 1.5;
+      rotateAsteroid(asteroids[i]);
       if (asteroids[i].position.y > height) {
         removeAsteroid(asteroids[i]);
       }
@@ -971,6 +994,16 @@ THE ABOVE CODE IS REQUIRED FOR DEPLOYING TO INSTANT GAMES! -->
       //   chicken.isAlive = false;
       // }
     }
+  }
+
+  function rotateAsteroid(asteroid) {
+    console.log(asteroid.rotation);
+    if (asteroid.rotation < -.8 && asteroid.rotation > -.9) {
+      rotateValue = .003;
+    } else if (asteroid.rotation < -.3   && asteroid.rotation > -.4) {
+      rotateValue = -.003;
+    }
+    asteroid.rotation += rotateValue;
   }
 
   // function that is called whenever asteroid is clicked
@@ -984,6 +1017,28 @@ THE ABOVE CODE IS REQUIRED FOR DEPLOYING TO INSTANT GAMES! -->
     stage.removeChild(asteroid);
     i = asteroids.indexOf(asteroid);
     asteroids.splice(i, 1);
+  }
+
+  // makes hearts float upward
+  function updateHeartsPosition() {
+    heartsSprite.position.y += -2.5;
+    if(heartsSprite.position.y < -200) {
+      stage.removeChild(heartsSprite);
+      heartShown = false;
+    }
+    wiggleHearts();
+  }
+
+  function wiggleHearts() {
+    console.log(heartsSprite.rotation)
+    if(heartsSprite.rotation > .20) {
+      rotateValue = -.005;
+      console.log("ayyyy");
+    }
+    else if (heartsSprite.rotation < -.2) {
+      rotateValue = .005;
+    }
+    heartsSprite.rotation += rotateValue;
   }
 
   // call FBInstant.loading.complete() when the game is ready to be played
