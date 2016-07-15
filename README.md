@@ -6,11 +6,13 @@ The next new cloud-computing based machine-learning innovative solution to the w
 - (Kat) Asteroids functionality
 - (Open) Special deaths (overeating, heartbroken, starving)
 
-# Links
+# Links to the game
 
-www.fburl.com/chiken
+https://www.fburl.com/chiken
 
-www.apps.facebook.com/hungryhungrychiken
+https://apps.facebook.com/hungryhungrychiken/
+
+https://www.facebook.com/chrisjeng/posts/1240544792622762?pnref=story
 
 # USE SAFARI TO TEST LOCALLY!
 Currently, Chrome doesn't render the images correctly....
