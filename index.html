@@ -640,6 +640,9 @@ THE ABOVE CODE IS REQUIRED FOR DEPLOYING TO INSTANT GAMES! -->
   var click_height = chicken.bodySprite.y;
   var previous_drop = 0;
   $(renderer.view).mousedown(function(e) {
+    if (!chicken.isAlive) {
+      return;
+    }
     // don't let people spam foods or drop them on the chicken
     if (chicken.isAlive) {
       gameStarted = true;
@@ -706,11 +709,13 @@ THE ABOVE CODE IS REQUIRED FOR DEPLOYING TO INSTANT GAMES! -->
       gameStarted = false;
     }
     requestAnimationFrame(animate);
-    updateFoodMovementPositions();
-    updateAsteroidsMovement();
-    // checkTimeElapsed(hungerSeconds, loveSeconds);
-    updateHungerLove();
-    text.text = level;
+    if (chicken.isAlive) {
+      updateFoodMovementPositions();
+      updateAsteroidsMovement();
+      // checkTimeElapsed(hungerSeconds, loveSeconds);
+      updateHungerLove();
+      text.text = level;
+    }
     // render the container
     renderer.render(stage);
   }
@@ -720,7 +725,9 @@ THE ABOVE CODE IS REQUIRED FOR DEPLOYING TO INSTANT GAMES! -->
   }
 
   function runEveryThreeSeconds() {
-    makeItRain(1);
+    if (chicken.isAlive) {
+      makeItRain(1);
+    }
   }
 
   function updateHungerLove() {
@@ -977,6 +984,7 @@ THE ABOVE CODE IS REQUIRED FOR DEPLOYING TO INSTANT GAMES! -->
   var onAsteroidClick = function () {
     isAsteroid = true;
     removeAsteroid(this);
+    // gameOver();
   };
 
   // removes asteroid from stage and from asteroids array
@@ -986,9 +994,28 @@ THE ABOVE CODE IS REQUIRED FOR DEPLOYING TO INSTANT GAMES! -->
     asteroids.splice(i, 1);
   }
 
+  function wipeFood() {
+    for (var i = 0; i < foods.length; i++) {
+      removeFood(foods[i]);
+    }
+  }
+
+  function wipeAsteroids() {
+    for (var i = 0; i < asteroids.length; i++) {
+      removeFood(asteroids[i]);
+    }
+  }
+
   // Call this function
   function gameOver() {
+    wipeFood();
+    wipeAsteroids();
+    chicken.setEye("dead");
+    chicken.isAlive = false;
+    gameStarted = false;
     console.log("Game over!");
+    // Freeze everything
+    FBInstant.game.asyncYieldControl();
   }
 
   // call FBInstant.loading.complete() when the game is ready to be played
