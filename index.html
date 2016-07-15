@@ -117,7 +117,7 @@ THE ABOVE CODE IS REQUIRED FOR DEPLOYING TO INSTANT GAMES! -->
       var mouth_x = 0.56 * this.bodySprite.width + this.bodySprite.position.x;
       var mouth_y = 0.53 * this.bodySprite.height + this.bodySprite.position.y;
       var mouth_width = 0.19 * this.bodySprite.width;
-      this.food_nearby = mouth_x < x && mouth_x + mouth_width > x && mouth_y > y && this.bodySprite.position.y < y;
+      this.food_nearby = this.food_nearby || mouth_x < x && mouth_x + mouth_width > x && mouth_y > y && this.bodySprite.position.y < y;
     }
 
     // checks collision with mouth
@@ -199,7 +199,6 @@ THE ABOVE CODE IS REQUIRED FOR DEPLOYING TO INSTANT GAMES! -->
       if (this.chickenWeight > 120){
         this.chickenWeight = 120;
       }
-      this.resizeChickenClosed(this.chickenWeight);
       this.hungerTimeElapsed = 0;
     }
 
@@ -294,9 +293,6 @@ THE ABOVE CODE IS REQUIRED FOR DEPLOYING TO INSTANT GAMES! -->
     }
 
     this.updateSprites = function(ticks) {
-      if (!this.isAlive) { // this should be first to prevent things from happening if chicken is dead
-        return;
-      }
       if (this.mood == "open" && !this.is_blinking && ticks % this.blink_frequency == randomNumber(0, this.blink_frequency)) {
         this.is_blinking = true;
       }
@@ -362,9 +358,11 @@ THE ABOVE CODE IS REQUIRED FOR DEPLOYING TO INSTANT GAMES! -->
     this.location = 0; // 0 is on the right side, 1 is on the left side
     this.hop_ticks = 30; // amount of ticks it takes for a hop
     this.start_hop = function(ticks) {
-      this.start_hop_tick = ticks;
-      this.is_hopping = true;
-      this.hop_stage = 0;
+      if (this.isAlive) {
+        this.start_hop_tick = ticks;
+        this.is_hopping = true;
+        this.hop_stage = 0;
+      }
     }
     this.stop_hop = function() {
       this.is_hopping = false;
@@ -633,6 +631,7 @@ THE ABOVE CODE IS REQUIRED FOR DEPLOYING TO INSTANT GAMES! -->
 
   var food = getRandomFood();
 
+  var click_height = chicken.bodySprite.y;
   var previous_drop = 0;
   $(renderer.view).mousedown(function(e) {
     // don't let people spam foods or drop them on the chicken
@@ -641,7 +640,7 @@ THE ABOVE CODE IS REQUIRED FOR DEPLOYING TO INSTANT GAMES! -->
     }
     var x = e.offsetX;
     var y = e.offsetY;
-    if (!(y < height * 0.25 && ticks - previous_drop > time_between_foods)) {
+    if (!(y < click_height && ticks - previous_drop > time_between_foods)) {
       return;
     }
     food.position.x = x;
