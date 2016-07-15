@@ -71,7 +71,7 @@ THE ABOVE CODE IS REQUIRED FOR DEPLOYING TO INSTANT GAMES! -->
     this.foodCount = 0;
     this.hungerTimeElapsed = 0;
     this.loveTimeElapsed = 0;
-    this.chickenWeight = 100;
+    this.chickenWeight = 50;
     this.chickenLove = 100;
     // stage 0 to 10: 0 is facing right, 5 is facing left, loops back to 0
     this.hopping_stage = 0;
@@ -455,7 +455,7 @@ THE ABOVE CODE IS REQUIRED FOR DEPLOYING TO INSTANT GAMES! -->
   var chickenMouthOpenTexture100 = PIXI.Texture.fromImage('assets/img/chicken_weight/chickenfat100beak.png');
 
   // init heart/hunger textures
-  // TEMPORARY COMMENT OUT: NEED TO USE RIP SYMBOL
+  // TEMPORARY TODO COMMENT OUT: NEED TO USE RIP SYMBOL
   // var heart0 = PIXI.Texture.fromImage('assets/img/heart/heart0.png');
   var heart10 = PIXI.Texture.fromImage('assets/img/heart/heart10.png');
   var heart20 = PIXI.Texture.fromImage('assets/img/heart/heart20.png');
@@ -612,8 +612,8 @@ THE ABOVE CODE IS REQUIRED FOR DEPLOYING TO INSTANT GAMES! -->
   loveText.position.y = 0.3 * height;
   stage.addChild(loveText);
 
-  // display the hunger logo at 100%
-  var hungerTexture = hunger100;
+  // display the hunger logo at 50%
+  var hungerTexture = hunger50;
   var hunger = new PIXI.Sprite(hungerTexture);
 
   // hard coded values
@@ -674,7 +674,7 @@ THE ABOVE CODE IS REQUIRED FOR DEPLOYING TO INSTANT GAMES! -->
       runOnceASecond();
     }
 
-    if (tutorialSign2.visible && totalLoveGiven > 100) {
+    if (tutorialSign2.visible && totalLoveGiven > 75) {
       tutorialSign2.visible = false;
       displayPermMsg();
     }
