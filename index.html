@@ -71,8 +71,8 @@ THE ABOVE CODE IS REQUIRED FOR DEPLOYING TO INSTANT GAMES! -->
     this.foodCount = 0;
     this.hungerTimeElapsed = 0;
     this.loveTimeElapsed = 0;
-    this.chickenWeight = 50;
-    this.chickenLove = 50;
+    this.chickenWeight = 100;
+    this.chickenLove = 100;
     // stage 0 to 10: 0 is facing right, 5 is facing left, loops back to 0
     this.hopping_stage = 0;
     this.mood = "open"; // happy, open, or sad
@@ -377,7 +377,7 @@ THE ABOVE CODE IS REQUIRED FOR DEPLOYING TO INSTANT GAMES! -->
   var hungerSeconds = 0;
   var loveSeconds = 0;
   var time_between_foods = 45;
-  var hungerWarnLevel = 25;
+  var hungerWarnLevel = 30;
   var loveWarnLevel = 25;
   var foodTutorialDone = false;
   var stage = new PIXI.Container();
@@ -397,14 +397,26 @@ THE ABOVE CODE IS REQUIRED FOR DEPLOYING TO INSTANT GAMES! -->
 
   // init heart/hunger textures
   var heart0 = PIXI.Texture.fromImage('assets/img/heart/heart0.png');
-  var heart25 = PIXI.Texture.fromImage('assets/img/heart/heart25.png');
+  var heart10 = PIXI.Texture.fromImage('assets/img/heart/heart10.png');
+  var heart20 = PIXI.Texture.fromImage('assets/img/heart/heart20.png');
+  var heart30 = PIXI.Texture.fromImage('assets/img/heart/heart30.png');
+  var heart40 = PIXI.Texture.fromImage('assets/img/heart/heart40.png');
   var heart50 = PIXI.Texture.fromImage('assets/img/heart/heart50.png');
-  var heart75 = PIXI.Texture.fromImage('assets/img/heart/heart75.png');
+  var heart60 = PIXI.Texture.fromImage('assets/img/heart/heart60.png');
+  var heart70 = PIXI.Texture.fromImage('assets/img/heart/heart70.png');
+  var heart80 = PIXI.Texture.fromImage('assets/img/heart/heart80.png');
+  var heart90 = PIXI.Texture.fromImage('assets/img/heart/heart90.png');
   var heart100 = PIXI.Texture.fromImage('assets/img/heart/heart100.png');
   var hunger0 = PIXI.Texture.fromImage('assets/img/hunger/hunger0.png');
-  var hunger25 = PIXI.Texture.fromImage('assets/img/hunger/hunger25.png');
+  var hunger10 = PIXI.Texture.fromImage('assets/img/hunger/hunger10.png');
+  var hunger20 = PIXI.Texture.fromImage('assets/img/hunger/hunger20.png');
+  var hunger30 = PIXI.Texture.fromImage('assets/img/hunger/hunger30.png');
+  var hunger40 = PIXI.Texture.fromImage('assets/img/hunger/hunger40.png');
   var hunger50 = PIXI.Texture.fromImage('assets/img/hunger/hunger50.png');
-  var hunger75 = PIXI.Texture.fromImage('assets/img/hunger/hunger75.png');
+  var hunger60 = PIXI.Texture.fromImage('assets/img/hunger/hunger60.png');
+  var hunger70 = PIXI.Texture.fromImage('assets/img/hunger/hunger70.png');
+  var hunger80 = PIXI.Texture.fromImage('assets/img/hunger/hunger80.png');
+  var hunger90 = PIXI.Texture.fromImage('assets/img/hunger/hunger90.png');
   var hunger100 = PIXI.Texture.fromImage('assets/img/hunger/hunger100.png');
 
   var food_fries = PIXI.Texture.fromImage('assets/img/food/fries.png')
@@ -678,15 +690,30 @@ THE ABOVE CODE IS REQUIRED FOR DEPLOYING TO INSTANT GAMES! -->
   function setHungerLevel(hungerLevel) {
     if (hungerLevel == 0){
       hunger.texture = hunger0;
-    } else if(hungerLevel > 0 && hungerLevel < hungerWarnLevel){
+    } else if(hungerLevel > 0 && hungerLevel < 10){
       attemptNoise(whineHungry);
-      hunger.texture = hunger25;
-    } else if (hungerLevel >= hungerWarnLevel && hungerLevel < 50) {
+      hunger.texture = hunger10;
+    } else if(hungerLevel >= 10 && hungerLevel < 20){
+      hunger.texture = hunger20;
+    } else if(hungerLevel >= 20 && hungerLevel < 30) {
+      hunger.texture = hunger30;
+      attemptNoise(whineHungry);
+    } else if(hungerLevel >= 30 && hungerLevel < 40) {
+      hunger.texture = hunger40;
+    } else if(hungerLevel >= 40 && hungerLevel < 50) {
       hunger.texture = hunger50;
-    } else if(hungerLevel >= 50 && hungerLevel < 75){
       attemptNoise(shortBwuk);
-      hunger.texture = hunger75;
-    } else if (hungerLevel >= 75 && hungerLevel <= 100){
+    } else if(hungerLevel >= 50 && hungerLevel < 60) {
+      hunger.texture = hunger60;
+    } else if(hungerLevel >= 60 && hungerLevel < 70) {
+      attemptNoise(shortBwuk);
+      hunger.texture = hunger70;
+    } else if(hungerLevel >= 70 && hungerLevel < 80) {
+      hunger.texture = hunger80;
+      attemptNoise(happyTrill);
+    } else if(hungerLevel >= 80 && hungerLevel < 90) {
+      hunger.texture = hunger90;
+    } else if(hungerLevel >= 90 && hungerLevel <= 100) {
       hunger.texture = hunger100;
       attemptNoise(happyTrill);
     }
@@ -710,17 +737,32 @@ THE ABOVE CODE IS REQUIRED FOR DEPLOYING TO INSTANT GAMES! -->
   function setLoveIcon(loveLevel) {
     if (loveLevel == 0){
       heart.texture = heart0;
-    } else if(loveLevel > 0 && loveLevel < loveWarnLevel){
+    } else if (loveLevel > 0 && loveLevel < 10){
       attemptNoise(whineLove);
-      heart.texture = heart25;
-    } else if (loveLevel >= loveWarnLevel && loveLevel < 50) {
-      heart.texture = heart50;
-    } else if (loveLevel >= 50 && loveLevel < 75){
-      heart.texture = heart75;
+      heart.texture = heart10;
+    } else if (loveLevel >= 10 && loveLevel < 20){
+      heart.texture = heart20;
+    } else if (loveLevel >= 20 && loveLevel < 30) {
+      attemptNoise(whineLove);
+      heart.texture = heart30;
+    } else if (loveLevel >= 30 && loveLevel < 40) {
+      heart.texture = heart40;
       attemptNoise(shortBwuk);
-    } else if(loveLevel >= 75 && loveLevel <= 100){
-      heart.texture = heart100;
+    } else if (loveLevel >= 40 && loveLevel < 50) {
+      heart.texture = heart50;
+    } else if (loveLevel >= 50 && loveLevel < 60) {
+      heart.texture = heart60;
+      attemptNoise(shortBwuk);
+    } else if (loveLevel >= 60 && loveLevel < 70) {
+      heart.texture = heart70;
+    } else if (loveLevel >= 70 && loveLevel < 80) {
+      heart.texture = heart80;
       attemptNoise(cuteCaw);
+    } else if (loveLevel >= 80 && loveLevel < 90) {
+      heart.texture = heart90;
+    } else if (loveLevel >= 90 && loveLevel <= 100) {
+      attemptNoise(cuteCaw);
+      heart.texture = heart100;
     }
   }
 
