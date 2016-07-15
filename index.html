@@ -625,6 +625,9 @@ THE ABOVE CODE IS REQUIRED FOR DEPLOYING TO INSTANT GAMES! -->
     }
 
     // Remove the tutorial text after 3 foods have been eaten
+    if (tutorialSign1.visible && numFoodEaten >= 3) {
+      tutorialSign1.visible = false;
+    }
 
     hungerSeconds = ++chicken.hungerTimeElapsed/60;
     loveSeconds = ++chicken.loveTimeElapsed/60;
