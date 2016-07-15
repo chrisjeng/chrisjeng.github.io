@@ -71,7 +71,7 @@ THE ABOVE CODE IS REQUIRED FOR DEPLOYING TO INSTANT GAMES! -->
     this.foodCount = 0;
     this.hungerTimeElapsed = 0;
     this.loveTimeElapsed = 0;
-    this.chickenWeight = 50;
+    this.chickenWeight = 100;
     this.chickenLove = 100;
     this.mood = "open"; // happy, open, or sad
     this.rubbing = false; // whether chicken is being rubbed
@@ -134,27 +134,27 @@ THE ABOVE CODE IS REQUIRED FOR DEPLOYING TO INSTANT GAMES! -->
     // resizes chicken based on hunger for closed mouth
     // TODO Angel
     this.resizeChickenClosed = function(weight) {
-      if (weight > 100) {
+      if (weight > 145) {
         this.bodySprite.texture = chickenMouthClosedTexture100;
         return;
       }
-      if (weight > 90) {
+      if (weight > 140) {
         this.bodySprite.texture = chickenMouthClosedTexture90;
         return;
       }
-      if (weight > 80) {
+      if (weight > 135) {
         this.bodySprite.texture = chickenMouthClosedTexture80;
         return;
       }
-      if (weight > 70) {
+      if (weight > 120) {
         this.bodySprite.texture = chickenMouthClosedTexture70;
         return;
       }
-      if (weight > 60) {
+      if (weight > 115) {
         this.bodySprite.texture = chickenMouthClosedTexture60;
         return;
       }
-      if (weight > 50) {
+      if (weight > 110) {
         this.bodySprite.texture = chickenMouthClosedTexture;
         return;
       }
@@ -164,27 +164,27 @@ THE ABOVE CODE IS REQUIRED FOR DEPLOYING TO INSTANT GAMES! -->
     // resizes chicken based on hunger for open mouth
     // TODO Angel
     this.resizeChickenOpen = function(weight) {
-      if (weight > 100) {
+      if (weight > 145) {
         this.bodySprite.texture = chickenMouthOpenTexture100;
         return;
       }
-      if (weight > 90) {
+      if (weight > 140) {
         this.bodySprite.texture = chickenMouthOpenTexture90;
         return;
       }
-      if (weight > 80) {
+      if (weight > 135) {
         this.bodySprite.texture = chickenMouthOpenTexture80;
         return;
       }
-      if (weight > 70) {
+      if (weight > 120) {
         this.bodySprite.texture = chickenMouthOpenTexture70;
         return;
       }
-      if (weight > 60) {
+      if (weight > 115) {
         this.bodySprite.texture = chickenMouthOpenTexture60;
         return;
       }
-      if (weight > 50) {
+      if (weight > 110) {
         this.bodySprite.texture = chickenMouthOpenTexture;
         return;
       }
@@ -194,8 +194,8 @@ THE ABOVE CODE IS REQUIRED FOR DEPLOYING TO INSTANT GAMES! -->
     // updates chicken weight with the given value! aka feed chicken
     this.updateChickenWeight = function(foodValue) {
       this.chickenWeight += foodValue;
-      if (this.chickenWeight > 120){
-        this.chickenWeight = 120;
+      if (this.chickenWeight > 200){
+        this.chickenWeight = 200;
       }
       this.hungerTimeElapsed = 0;
     }
@@ -306,7 +306,7 @@ THE ABOVE CODE IS REQUIRED FOR DEPLOYING TO INSTANT GAMES! -->
     }
 
     this.checkIsAlive = function() {
-      if (this.chickenWeight <= 0 || this.chickenLove <= 0 || this.chickenWeight > 110) {
+      if (this.chickenWeight <= 0 || this.chickenLove <= 0 || this.chickenWeight > 150) {
         this.isAlive = false;
         this.setEye("dead");
       }
