@@ -294,7 +294,7 @@ THE ABOVE CODE IS REQUIRED FOR DEPLOYING TO INSTANT GAMES! -->
     }
 
     this.updateSprites = function(ticks) {
-      if (!this.isAlive) {
+      if (!this.isAlive) { // this should be first to prevent things from happening if chicken is dead
         return;
       }
       if (this.mood == "open" && !this.is_blinking && ticks % this.blink_frequency == randomNumber(0, this.blink_frequency)) {
@@ -307,12 +307,12 @@ THE ABOVE CODE IS REQUIRED FOR DEPLOYING TO INSTANT GAMES! -->
       this.hop(ticks);
       this.handleFoodNearby();
       this.handleMood();
-      this.checkIsAlive();
+      this.checkIsAlive(); // this should be last to prevent other things from happening when the chicken dies
       chicken.updateEyeLocation();
     }
 
     this.checkIsAlive = function() {
-      if (this.chickenWeight <= 0 || this.chickenLove <= 0) {
+      if (this.chickenWeight <= 0 || this.chickenLove <= 0 || this.chickenWeight > 110) {
         this.isAlive = false;
         this.setEye("dead");
       }
