@@ -414,11 +414,11 @@
   var width = 640;
   var height = 480;
   var TIME_BETWEEN_FOODS = 10;
-  var INIT_DECAY_RATE = 1/60; // amount hunger decays per tick
+  var INIT_DECAY_RATE = 2/60; // amount hunger decays per tick
   var DECAY_GROWTH_RATE = 1/480;
   var HUNGERWARNLEVEL = 30;
   var LOVEWARNLEVEL = 25;
-
+  var TUTORIAL_LOVE_THRESHOLD_2 = 20;
   // These things vary
   var level;
   var ticks;
@@ -719,6 +719,13 @@
   stage.addChild(tutorialSign2);
   stage.addChild(permanentMsg);
 
+  function incrementScore() {
+    if (gameStarted && chicken.isAlive) {
+      level++;
+      text.text = level;
+    }
+  }
+
   // start animating
   animate();
   function animate() {
@@ -727,7 +734,7 @@
       console.log("weight: " + chicken.chickenWeight + ", love: " + chicken.chickenLove)
       runOnceASecond();
       decay_rate += DECAY_GROWTH_RATE;
-      level++;
+      incrementScore();
       FBInstant.game.setScore(level);
     }
 
@@ -735,7 +742,7 @@
       runEveryThreeSeconds();
     }
 
-    if (tutorialSign2.visible && totalLoveGiven > 75) {
+    if (tutorialSign2.visible && totalLoveGiven > TUTORIAL_LOVE_THRESHOLD_2) {
       tutorialSign2.visible = false;
       displayPermMsg();
     }
