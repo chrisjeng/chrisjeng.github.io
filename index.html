@@ -115,7 +115,7 @@ THE ABOVE CODE IS REQUIRED FOR DEPLOYING TO INSTANT GAMES! -->
       }
     }
     this.checkNearbyMouth = function(x, y) {
-      var mouth_x = 0.57 * this.bodySprite.width + this.bodySprite.position.x;
+      var mouth_x = 0.56 * this.bodySprite.width + this.bodySprite.position.x;
       var mouth_y = 0.53 * this.bodySprite.height + this.bodySprite.position.y;
       var mouth_width = 0.19 * this.bodySprite.width;
       this.food_nearby = mouth_x < x && mouth_x + mouth_width > x && mouth_y > y && this.bodySprite.position.y < y;
@@ -124,7 +124,7 @@ THE ABOVE CODE IS REQUIRED FOR DEPLOYING TO INSTANT GAMES! -->
     // checks collision with mouth
     this.checkCollision = function(x, y, width, height) {
       // approximate locations
-      var mouth_x = 0.57 * this.bodySprite.width + this.bodySprite.position.x;
+      var mouth_x = 0.56 * this.bodySprite.width + this.bodySprite.position.x;
       var mouth_y = 0.53 * this.bodySprite.height + this.bodySprite.position.y;
       var mouth_width = 0.19 * this.bodySprite.width;
       var mouth_height = 0.115 * this.bodySprite.height;
@@ -448,18 +448,18 @@ THE ABOVE CODE IS REQUIRED FOR DEPLOYING TO INSTANT GAMES! -->
   var picketTexture = PIXI.Texture.fromImage('assets/img/just_picket.png');
 
   // chicken weight textures closed mouth
-  var chickenMouthClosedTexture60 = PIXI.Texture.fromImage('assets/img/chicken_weight/chickenfat60.jpg');
-  var chickenMouthClosedTexture70 = PIXI.Texture.fromImage('assets/img/chicken_weight/chickenfat70.jpg');
-  var chickenMouthClosedTexture80 = PIXI.Texture.fromImage('assets/img/chicken_weight/chickenfat80.jpg');
-  var chickenMouthClosedTexture90 = PIXI.Texture.fromImage('assets/img/chicken_weight/chickenfat90.jpg');
-  var chickenMouthClosedTexture100 = PIXI.Texture.fromImage('assets/img/chicken_weight/chickenfat100.jpg');
+  var chickenMouthClosedTexture60 = PIXI.Texture.fromImage('assets/img/chicken_weight/chickenfat60.png');
+  var chickenMouthClosedTexture70 = PIXI.Texture.fromImage('assets/img/chicken_weight/chickenfat70.png');
+  var chickenMouthClosedTexture80 = PIXI.Texture.fromImage('assets/img/chicken_weight/chickenfat80.png');
+  var chickenMouthClosedTexture90 = PIXI.Texture.fromImage('assets/img/chicken_weight/chickenfat90.png');
+  var chickenMouthClosedTexture100 = PIXI.Texture.fromImage('assets/img/chicken_weight/chickenfat100.png');
 
   // chicken weight textures open mouth
-  var chickenMouthOpenTexture60 = PIXI.Texture.fromImage('assets/img/chicken_weight/chickenfat60beak.jpg');
-  var chickenMouthOpenTexture70 = PIXI.Texture.fromImage('assets/img/chicken_weight/chickenfat70beak.jpg');
-  var chickenMouthOpenTexture80 = PIXI.Texture.fromImage('assets/img/chicken_weight/chickenfat80beak.jpg');
-  var chickenMouthOpenTexture90 = PIXI.Texture.fromImage('assets/img/chicken_weight/chickenfat90beak.jpg');
-  var chickenMouthOpenTexture100 = PIXI.Texture.fromImage('assets/img/chicken_weight/chickenfat100beak.jpg');
+  var chickenMouthOpenTexture60 = PIXI.Texture.fromImage('assets/img/chicken_weight/chickenfat60beak.png');
+  var chickenMouthOpenTexture70 = PIXI.Texture.fromImage('assets/img/chicken_weight/chickenfat70beak.png');
+  var chickenMouthOpenTexture80 = PIXI.Texture.fromImage('assets/img/chicken_weight/chickenfat80beak.png');
+  var chickenMouthOpenTexture90 = PIXI.Texture.fromImage('assets/img/chicken_weight/chickenfat90beak.png');
+  var chickenMouthOpenTexture100 = PIXI.Texture.fromImage('assets/img/chicken_weight/chickenfat100beak.png');
 
   // init heart/hunger textures
   var heart0 = PIXI.Texture.fromImage('assets/img/heart/heart0.png');
