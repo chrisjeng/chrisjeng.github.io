@@ -2,8 +2,6 @@
 The next new cloud-computing based machine-learning innovative solution to the world's problems to make the world a better place.
 
 # TODO
-- (Chris) Make a game over action (yield control, stop bg music, stop changing hunger/love)
-- (Kat) Asteroids functionality
 - (Open) Special deaths (overeating, heartbroken, starving)
 
 # Links to the game
