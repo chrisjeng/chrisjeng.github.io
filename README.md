@@ -26,3 +26,9 @@ Currently, Chrome doesn't render the images correctly....
 - Love the chicken by rubbing the chicken's tummy! Loving tends to make the chicken a little bit hungry!
 - Don't overfeed the chicken!
 - Keep the chicken alive for as long as you can!
+
+# Fun Facts
+
+This text will occasionally pop up at the bottom for no reason
+
+- Did you know that 80% of chickens are vegetarian?
