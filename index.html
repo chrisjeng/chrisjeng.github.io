@@ -1,5 +1,22 @@
 <html>
 <head>
+
+  <style type="text/css">
+    html {
+      height: 100%;
+      width: 100%;
+    }
+
+    body {
+      height: 100%;
+      width: 100%;
+    }
+
+    canvas {
+      height: 100%;
+      width: 100%;
+    }
+</style>
 </head>
 <body>
 
@@ -533,6 +550,53 @@
   var renderer = PIXI.autoDetectRenderer(width, height,{backgroundColor : 0x81D4FA});
   document.body.appendChild(renderer.view);
 
+  var onButtonDown = function(e) {
+    console.log(e)
+    // Handle restarting game logic
+    if (!gameStarted && !chicken.isAlive) {
+      // Restart the game
+      restart();
+      return;
+    }
+    if (!chicken.isAlive) {
+      console.log("Chiken ded! No click action");
+      return;
+    }
+    if (chicken.isAlive) {
+      gameStarted = true;
+    }
+    // don't let people spam foods or drop them on the chicken
+    var x = e.data.global.x;
+    var y = 0;
+    if (!(y < click_height && ticks - previous_drop > TIME_BETWEEN_FOODS)) {
+      console.log("Too frequent click")
+      return;
+    }
+    food.position.x = x;
+    food.position.y = y;
+    foods.push(food); // Keep track of this food
+    stage.addChild(food);
+    food = getRandomFood();
+    previous_drop = ticks;
+    isAsteroid = false;
+
+  }
+  var onButtonUp = function(e) {
+
+  }
+  var clickable = new PIXI.Graphics();
+  clickable.beginFill(0x81D4FA);
+  clickable.drawRect(0, 0, width, 0.25 * height);
+  clickable.endFill();
+  clickable.interactive = true;
+  clickable.on('mousedown', onButtonDown)
+    .on('mouseup', onButtonUp)
+    .on('mouseupoutside', onButtonUp)
+    .on('touchstart', onButtonDown)
+    .on('touchend', onButtonUp)
+    .on('touchendoutside', onButtonUp);
+  stage.addChild(clickable);
+
   var grass = new PIXI.Graphics();
   grass.beginFill(0x00C853);
   grass.drawRect(0, height - 0.3 * height, width, 0.3 * height);
@@ -688,36 +752,36 @@
     console.log("Restart!");
   }
 
-  $(renderer.view).mousedown(function(e) {
-
-    // Handle restarting game logic
-    if (!gameStarted && !chicken.isAlive) {
-      // Restart the game
-      restart();
-      return;
-    }
-    if (!chicken.isAlive) {
-      console.log("Chiken ded! No click action");
-      return;
-    }
-    if (chicken.isAlive) {
-      gameStarted = true;
-    }
-    // don't let people spam foods or drop them on the chicken
-    var x = e.offsetX;
-    var y = e.offsetY;
-    if (!(y < click_height && ticks - previous_drop > TIME_BETWEEN_FOODS)) {
-      console.log("Too frequent click")
-      return;
-    }
-    food.position.x = x;
-    food.position.y = y;
-    foods.push(food); // Keep track of this food
-    stage.addChild(food);
-    food = getRandomFood();
-    previous_drop = ticks;
-    isAsteroid = false;
-  });
+  // $(renderer.view).mousedown(function(e) {
+  //
+  //   // Handle restarting game logic
+  //   if (!gameStarted && !chicken.isAlive) {
+  //     // Restart the game
+  //     restart();
+  //     return;
+  //   }
+  //   if (!chicken.isAlive) {
+  //     console.log("Chiken ded! No click action");
+  //     return;
+  //   }
+  //   if (chicken.isAlive) {
+  //     gameStarted = true;
+  //   }
+  //   // don't let people spam foods or drop them on the chicken
+  //   var x = e.offsetX;
+  //   var y = e.offsetY;
+  //   if (!(y < click_height && ticks - previous_drop > TIME_BETWEEN_FOODS)) {
+  //     console.log("Too frequent click")
+  //     return;
+  //   }
+  //   food.position.x = x;
+  //   food.position.y = y;
+  //   foods.push(food); // Keep track of this food
+  //   stage.addChild(food);
+  //   food = getRandomFood();
+  //   previous_drop = ticks;
+  //   isAsteroid = false;
+  // });
 
   var textSignSettings = {font : '20px Arvo', fill : 0x000000, align : 'center'};
   var tutorialSignText1 = "Click the air to \ndrop yummy food!";
