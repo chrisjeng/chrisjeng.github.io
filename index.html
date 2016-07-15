@@ -73,8 +73,6 @@ THE ABOVE CODE IS REQUIRED FOR DEPLOYING TO INSTANT GAMES! -->
     this.loveTimeElapsed = 0;
     this.chickenWeight = 50;
     this.chickenLove = 100;
-    // stage 0 to 10: 0 is facing right, 5 is facing left, loops back to 0
-    this.hopping_stage = 0;
     this.mood = "open"; // happy, open, or sad
     this.rubbing = false; // whether chicken is being rubbed
     this.isAlive = true;
@@ -322,7 +320,9 @@ THE ABOVE CODE IS REQUIRED FOR DEPLOYING TO INSTANT GAMES! -->
       } else {
         this.mood = "open";
       }
+      if (!this.is_blinking) {
       this.setEye(this.mood);
+    }
     }
 
     this.is_blinking = false;
