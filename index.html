@@ -403,6 +403,11 @@
       stage.addChild(this.eyeSprite);
     }
 
+    this.removeFromStage = function(stage) {
+      stage.removeChild(this.bodySprite);
+      stage.removeChild(this.eyeSprite);
+    }
+
   }
 
   // Set once and for all
@@ -657,6 +662,9 @@
 
   function restart() {
     initVars();
+    chicken.removeFromStage(stage);
+    chicken = new Chicken()
+    chicken.addToStage(stage);
     text.text = level;
     chicken.isAlive = true;
     console.log("Restart!");
@@ -737,7 +745,10 @@
       loveSeconds = ++chicken.loveTimeElapsed/60;
       chicken.updateSprites(ticks);
     } else {
-      gameStarted = false;
+      if (gameStarted) {
+        gameOver();
+        gameStarted = false;
+      }
     }
     requestAnimationFrame(animate);
     if (chicken.isAlive) {
