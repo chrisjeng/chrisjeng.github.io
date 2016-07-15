@@ -77,6 +77,7 @@ THE ABOVE CODE IS REQUIRED FOR DEPLOYING TO INSTANT GAMES! -->
     this.hopping_stage = 0;
     this.mood = "open"; // happy, open, or sad
     this.rubbing = false; // whether chicken is being rubbed
+    this.isAlive = true;
     // petting event listener
     var onDragStart = function(event) {
       // store a reference to the data
@@ -251,7 +252,8 @@ THE ABOVE CODE IS REQUIRED FOR DEPLOYING TO INSTANT GAMES! -->
       "eye_closed": {x: 0.48, y: 0.48},
       "eye_half": {x: 0.48, y: 0.48},
       "eye_happy": {x: 0.46, y: 0.48},
-      "eye_sad": {x: 0.46, y: 0.42}
+      "eye_sad": {x: 0.46, y: 0.42},
+      "eye_dead": {x: 0.46, y:0.42}
     };
     this.updateEyeLocation = function() {
       var eye_x = this.eye_positions[this.eye]['x'];
@@ -284,10 +286,17 @@ THE ABOVE CODE IS REQUIRED FOR DEPLOYING TO INSTANT GAMES! -->
           this.eyeSprite.texture = chickenEyeSadTexture;
           this.eye = "eye_sad";
           break;
+        case "dead":
+          this.eyeSprite.texture = chickenEyeDeadTexture;
+          this.eye = "eye_dead";
+          break;
       }
     }
 
     this.updateSprites = function(ticks) {
+      if (!this.isAlive) {
+        return;
+      }
       if (this.mood == "open" && !this.is_blinking && ticks % this.blink_frequency == randomNumber(0, this.blink_frequency)) {
         this.is_blinking = true;
       }
@@ -298,7 +307,15 @@ THE ABOVE CODE IS REQUIRED FOR DEPLOYING TO INSTANT GAMES! -->
       this.hop(ticks);
       this.handleFoodNearby();
       this.handleMood();
+      this.checkIsAlive();
       chicken.updateEyeLocation();
+    }
+
+    this.checkIsAlive = function() {
+      if (this.chickenWeight <= 0 || this.chickenLove <= 0) {
+        this.isAlive = false;
+        this.setEye("dead");
+      }
     }
 
     this.handleMood = function() {
@@ -386,6 +403,11 @@ THE ABOVE CODE IS REQUIRED FOR DEPLOYING TO INSTANT GAMES! -->
       .on('mousemove', onDragMove)
       .on('touchmove', onDragMove);
 
+    this.addToStage = function(stage) {
+      stage.addChild(this.bodySprite);
+      stage.addChild(this.eyeSprite);
+    }
+
   }
 
   var level = 0;
@@ -408,6 +430,7 @@ THE ABOVE CODE IS REQUIRED FOR DEPLOYING TO INSTANT GAMES! -->
   var chickenEyeClosedTexture = PIXI.Texture.fromImage('assets/img/chicken/eye_closed.png');
   var chickenEyeHappyTexture = PIXI.Texture.fromImage('assets/img/chicken/eye_happy.png');
   var chickenEyeSadTexture = PIXI.Texture.fromImage('assets/img/chicken/eye_sad.png');
+  var chickenEyeDeadTexture = PIXI.Texture.fromImage('assets/img/chicken/eye_dead.png');
   var foodTexture = PIXI.Texture.fromImage('assets/img/food/fries.png');
   var barnTexture = PIXI.Texture.fromImage('assets/img/background/barn.png');
   var cloudTexture = PIXI.Texture.fromImage('assets/img/background/cloud3.png');
@@ -546,8 +569,7 @@ THE ABOVE CODE IS REQUIRED FOR DEPLOYING TO INSTANT GAMES! -->
   // create a texture from an image path
   var foods = []; // Keeps track of all food on screen
   var chicken = new Chicken()
-  stage.addChild(chicken.bodySprite);
-  stage.addChild(chicken.eyeSprite);
+  chicken.addToStage(stage);
   var numFoodEaten = 0;
   var text = new PIXI.Text(numFoodEaten, {font : '36px Arvo', fill : 0x000000, align : 'center'});
   var scoreBorderWidth = 10;
