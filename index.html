@@ -71,7 +71,7 @@ THE ABOVE CODE IS REQUIRED FOR DEPLOYING TO INSTANT GAMES! -->
     this.foodCount = 0;
     this.hungerTimeElapsed = 0;
     this.loveTimeElapsed = 0;
-    this.chickenWeight = 100;
+    this.chickenWeight = 50;
     this.chickenLove = 100;
     // stage 0 to 10: 0 is facing right, 5 is facing left, loops back to 0
     this.hopping_stage = 0;
@@ -91,7 +91,6 @@ THE ABOVE CODE IS REQUIRED FOR DEPLOYING TO INSTANT GAMES! -->
       // set the interaction data to null
       this.data = null;
       chicken.rubbing = false;
-      console.log(chicken.chickenLove);
     }
 
     // on drag, check to see if mouse is still colliding w/ chicken
@@ -99,7 +98,6 @@ THE ABOVE CODE IS REQUIRED FOR DEPLOYING TO INSTANT GAMES! -->
       if (this.dragging) {
         var mousePosition = this.data.getLocalPosition(this.parent);
         if(checkMouseCollision(mousePosition, chicken.bodySprite) || checkMouseCollision(mousePosition, chicken.eyeSprite)) {
-          console.log("petpetpet");
           chicken.increaseChickenLove();
         }
       }
@@ -119,7 +117,7 @@ THE ABOVE CODE IS REQUIRED FOR DEPLOYING TO INSTANT GAMES! -->
       var mouth_x = 0.56 * this.bodySprite.width + this.bodySprite.position.x;
       var mouth_y = 0.53 * this.bodySprite.height + this.bodySprite.position.y;
       var mouth_width = 0.19 * this.bodySprite.width;
-      this.food_nearby = mouth_x < x && mouth_x + mouth_width > x && mouth_y > y && this.bodySprite.position.y < y;
+      this.food_nearby = this.food_nearby || mouth_x < x && mouth_x + mouth_width > x && mouth_y > y && this.bodySprite.position.y < y;
     }
 
     // checks collision with mouth
@@ -139,7 +137,7 @@ THE ABOVE CODE IS REQUIRED FOR DEPLOYING TO INSTANT GAMES! -->
     // TODO Angel
     this.resizeChickenClosed = function(weight) {
       if (weight > 100) {
-        this.bodySprite.texture = chickenMouthOpenTexture100;
+        this.bodySprite.texture = chickenMouthClosedTexture100;
         return;
       }
       if (weight > 90) {
@@ -198,10 +196,9 @@ THE ABOVE CODE IS REQUIRED FOR DEPLOYING TO INSTANT GAMES! -->
     // updates chicken weight with the given value! aka feed chicken
     this.updateChickenWeight = function(foodValue) {
       this.chickenWeight += foodValue;
-      if (this.chickenWeight > 100){
-        this.chickenWeight = 100;
+      if (this.chickenWeight > 120){
+        this.chickenWeight = 120;
       }
-      this.resizeChickenClosed(this.chickenWeight);
       this.hungerTimeElapsed = 0;
     }
 
@@ -224,9 +221,8 @@ THE ABOVE CODE IS REQUIRED FOR DEPLOYING TO INSTANT GAMES! -->
       }
     }
 
-    this.decreaseChickenLove = function() {
-      this.loveTimeElapsed = 0;
-      this.chickenLove += -5;
+    this.changeChickenLove = function(amt) {
+      this.chickenLove += amt;
     }
     this.bodySprite = new PIXI.Sprite(chickenMouthClosedTexture);
     this.bodySprite.anchor.x = 0.0;
@@ -256,7 +252,7 @@ THE ABOVE CODE IS REQUIRED FOR DEPLOYING TO INSTANT GAMES! -->
       "eye_half": {x: 0.48, y: 0.48},
       "eye_happy": {x: 0.46, y: 0.48},
       "eye_sad": {x: 0.46, y: 0.42},
-      "eye_dead": {x: 0.46, y:0.42}
+      "eye_dead": {x: 0.49, y:0.42}
     };
     this.updateEyeLocation = function() {
       var eye_x = this.eye_positions[this.eye]['x'];
@@ -297,9 +293,6 @@ THE ABOVE CODE IS REQUIRED FOR DEPLOYING TO INSTANT GAMES! -->
     }
 
     this.updateSprites = function(ticks) {
-      if (!this.isAlive) { // this should be first to prevent things from happening if chicken is dead
-        return;
-      }
       if (this.mood == "open" && !this.is_blinking && ticks % this.blink_frequency == randomNumber(0, this.blink_frequency)) {
         this.is_blinking = true;
       }
@@ -365,9 +358,11 @@ THE ABOVE CODE IS REQUIRED FOR DEPLOYING TO INSTANT GAMES! -->
     this.location = 0; // 0 is on the right side, 1 is on the left side
     this.hop_ticks = 30; // amount of ticks it takes for a hop
     this.start_hop = function(ticks) {
-      this.start_hop_tick = ticks;
-      this.is_hopping = true;
-      this.hop_stage = 0;
+      if (this.isAlive) {
+        this.start_hop_tick = ticks;
+        this.is_hopping = true;
+        this.hop_stage = 0;
+      }
     }
     this.stop_hop = function() {
       this.is_hopping = false;
@@ -419,11 +414,15 @@ THE ABOVE CODE IS REQUIRED FOR DEPLOYING TO INSTANT GAMES! -->
   var ticks = 0;
   var hungerSeconds = 0;
   var loveSeconds = 0;
-  var time_between_foods = 45;
+  var time_between_foods = 10;
+  var init_decay_rate = 1/60; // amount hunger decays per tick
+  var decay_rate = init_decay_rate; // every second decay rate increases by this much
+  var decay_growth_rate = 1/240;
   var hungerWarnLevel = 30;
   var loveWarnLevel = 25;
   var totalLoveGiven = 0;
   var foodTutorialDone = false;
+  var gameStarted = false;
   var stage = new PIXI.Container();
 
   // Initialize textures
@@ -455,7 +454,8 @@ THE ABOVE CODE IS REQUIRED FOR DEPLOYING TO INSTANT GAMES! -->
   var chickenMouthOpenTexture100 = PIXI.Texture.fromImage('assets/img/chicken_weight/chickenfat100beak.png');
 
   // init heart/hunger textures
-  var heart0 = PIXI.Texture.fromImage('assets/img/heart/heart0.png');
+  // TEMPORARY TODO COMMENT OUT: NEED TO USE RIP SYMBOL
+  // var heart0 = PIXI.Texture.fromImage('assets/img/heart/heart0.png');
   var heart10 = PIXI.Texture.fromImage('assets/img/heart/heart10.png');
   var heart20 = PIXI.Texture.fromImage('assets/img/heart/heart20.png');
   var heart30 = PIXI.Texture.fromImage('assets/img/heart/heart30.png');
@@ -617,8 +617,8 @@ THE ABOVE CODE IS REQUIRED FOR DEPLOYING TO INSTANT GAMES! -->
   loveText.position.y = 0.3 * height;
   stage.addChild(loveText);
 
-  // display the hunger logo at 100%
-  var hungerTexture = hunger100;
+  // display the hunger logo at 50%
+  var hungerTexture = hunger50;
   var hunger = new PIXI.Sprite(hungerTexture);
 
   // hard coded values
@@ -637,13 +637,17 @@ THE ABOVE CODE IS REQUIRED FOR DEPLOYING TO INSTANT GAMES! -->
 
   var food = getRandomFood();
 
+  var click_height = chicken.bodySprite.y;
   var previous_drop = 0;
   $(renderer.view).mousedown(function(e) {
-    if(!isAsteroid) {
-      // don't let people spam foods or drop them on the chicken
+    // don't let people spam foods or drop them on the chicken
+    if (chicken.isAlive) {
+      gameStarted = true;
+    }
+    if(!isAsteroid){
       var x = e.offsetX;
       var y = e.offsetY;
-      if (!(y < height * 0.25 && ticks - previous_drop > time_between_foods)) {
+      if (!(y < click_height && ticks - previous_drop > time_between_foods)) {
         return;
       }
       food.position.x = x;
@@ -678,27 +682,35 @@ THE ABOVE CODE IS REQUIRED FOR DEPLOYING TO INSTANT GAMES! -->
   animate();
   function animate() {
     ++ticks;
-    if (ticks % 60 == 0) {
+    if (gameStarted && ticks % 60 == 0) {
+      console.log("weight: " + chicken.chickenWeight + ", love: " + chicken.chickenLove)
       runOnceASecond();
+      decay_rate += decay_growth_rate;
+      level++;
     }
 
     if(ticks % 180 == 0){
       runEveryThreeSeconds();
     }
 
-    if (tutorialSign2.visible && totalLoveGiven > 100) {
+    if (tutorialSign2.visible && totalLoveGiven > 75) {
       tutorialSign2.visible = false;
       displayPermMsg();
     }
 
-    hungerSeconds = ++chicken.hungerTimeElapsed/60;
-    loveSeconds = ++chicken.loveTimeElapsed/60;
-    chicken.updateSprites(ticks);
+    if (chicken.isAlive) {
+      hungerSeconds = ++chicken.hungerTimeElapsed/60;
+      loveSeconds = ++chicken.loveTimeElapsed/60;
+      chicken.updateSprites(ticks);
+    } else {
+      gameStarted = false;
+    }
     requestAnimationFrame(animate);
     updateFoodMovementPositions();
     updateAsteroidsMovement();
-    checkTimeElapsed(hungerSeconds, loveSeconds);
-    text.text = numFoodEaten;
+    // checkTimeElapsed(hungerSeconds, loveSeconds);
+    updateHungerLove();
+    text.text = level;
     // render the container
     renderer.render(stage);
   }
@@ -711,18 +723,25 @@ THE ABOVE CODE IS REQUIRED FOR DEPLOYING TO INSTANT GAMES! -->
     makeItRain(1);
   }
 
-  function checkTimeElapsed(hungerSeconds, loveSeconds) {
-    // if no action has been taken on hunger, make chicken skinnier
-    if (hungerSeconds > 2.5) {
-      chicken.updateChickenWeight(-5);
-      setHungerLevel(chicken.chickenWeight);
-    }
-    if (loveSeconds > 2.5){
-      chicken.decreaseChickenLove();
-      setLoveIcon(chicken.chickenLove);
-    }
-    // if no action has been taken on love, update the chicken love
+  function updateHungerLove() {
+    chicken.updateChickenWeight(-decay_rate);
+    setHungerLevel(chicken.chickenWeight);
+    chicken.changeChickenLove(-decay_rate);
+    setLoveIcon(chicken.chickenLove);
   }
+
+  // function checkTimeElapsed(hungerSeconds, loveSeconds) {
+  //   // if no action has been taken on hunger, make chicken skinnier
+  //   if (hungerSeconds > 2.5) {
+  //     chicken.updateChickenWeight(-decay_rate);
+  //     setHungerLevel(chicken.chickenWeight);
+  //   }
+  //   if (loveSeconds > 2.5){
+  //     chicken.decreaseChickenLove();
+  //     setLoveIcon(chicken.chickenLove);
+  //   }
+  //   // if no action has been taken on love, update the chicken love
+  // }
 
   function displayPermMsg() {
     if (!permanentMsg.visible && !tutorialSign1.visible && !tutorialSign2.visible) {
@@ -738,7 +757,7 @@ THE ABOVE CODE IS REQUIRED FOR DEPLOYING TO INSTANT GAMES! -->
       if (foods[i].position.y > height) {
         removeFood(foods[i]);
       }
-      else if (chicken.checkCollision(foods[i].position.x, foods[i].position.y, foods[i].width, foods[i].height)) {
+      else if (chicken.isAlive && chicken.checkCollision(foods[i].position.x, foods[i].position.y, foods[i].width, foods[i].height)) {
         removeFood(foods[i]);
         bite.play();
         if (++chicken.foodCount == 2) {
@@ -845,7 +864,8 @@ THE ABOVE CODE IS REQUIRED FOR DEPLOYING TO INSTANT GAMES! -->
   // replaces the love icon with the appropriate icon
   function setLoveIcon(loveLevel) {
     if (loveLevel == 0){
-      heart.texture = heart0;
+      // TEMPORARY TODO KAT USE RIP SYMBOL
+      heart.texture = heart10;
     } else if (loveLevel > 0 && loveLevel < 10){
       attemptNoise(whineLove);
       heart.texture = heart10;
@@ -946,10 +966,10 @@ THE ABOVE CODE IS REQUIRED FOR DEPLOYING TO INSTANT GAMES! -->
       if (asteroids[i].position.y > height) {
         removeAsteroid(asteroids[i]);
       }
-      if(checkCollision(chicken, asteroids[i])){
-        removeAsteroid(asteroids[i]);
-        chicken.isAlive = false;
-      }
+      // if(checkCollision(chicken, asteroids[i])){
+      //   removeAsteroid(asteroids[i]);
+      //   chicken.isAlive = false;
+      // }
     }
   }
 
