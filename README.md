@@ -3,6 +3,7 @@ The next new cloud-computing based machine-learning innovative solution to the w
 
 # TODO
 - (Open) Special deaths (overeating, heartbroken, starving)
+- (Chris) Clip the music correctly so that it can loop
 
 # Links to the game
 
