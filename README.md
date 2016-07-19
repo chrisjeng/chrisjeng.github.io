@@ -3,7 +3,7 @@ The next new cloud-computing based machine-learning innovative solution to the w
 
 # TODO
 - (Open) Special deaths (overeating, heartbroken, starving)
-- (Chris) Clip the music correctly so that it can loop
+- (Chris) Clip the music at a nice spot so that its compatible to looping. Right now, the end of the music fades, so this doesn't make for good looping.
 
 # Links to the game
 
